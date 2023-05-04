@@ -15,5 +15,14 @@ func (app *application) routes() *gin.Engine {
 		})
 	})
 
+    productRoutes := route.Group("/products")
+    {
+        productRoutes.POST("/", app.products.Create)
+        productRoutes.GET("/", app.products.GetAll)
+        productRoutes.GET("/:productId", app.products.GetById)
+        productRoutes.PUT("/:productId", app.products.Update)
+        productRoutes.DELETE("/:productId", app.products.Delete)
+    }
+
 	return route
 }
