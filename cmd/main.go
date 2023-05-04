@@ -1,19 +1,13 @@
 package main
 
-import (
-	"net/http"
+const PORT = ":8080"
 
-	"github.com/gin-gonic/gin"
-)
+type application struct {
+}
 
 func main() {
-	r := gin.Default()
+    app := &application{}
 
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{
-			"data": "Hello World",
-		})
-	})
-
-    r.Run()
+    route := app.routes()
+    route.Run(PORT)
 }
