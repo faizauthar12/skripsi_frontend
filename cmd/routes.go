@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/middlewares"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,12 +18,23 @@ func (app *application) routes() *gin.Engine {
 
     productRoutes := route.Group("/products")
     {
-        productRoutes.POST("/", app.products.Create)
         productRoutes.GET("/", app.products.GetAll)
         productRoutes.GET("/:productId", app.products.GetById)
-        productRoutes.PUT("/:productId", app.products.Update)
-        productRoutes.DELETE("/:productId", app.products.Delete)
     }
+
+	protectedProductRoutes := route.Group("/products")
+	{
+		protectedProductRoutes.Use(middlewares.JwtAuthMiddleware())
+		protectedProductRoutes.POST("/", app.products.Create)
+		protectedProductRoutes.PUT("/:productId", app.products.Update)
+		protectedProductRoutes.DELETE("/:productId", app.products.Delete)
+	}
+
+	userRoutes := route.Group("/user")
+	{
+		userRoutes.POST("/register", app.users.Register)
+		userRoutes.POST("/login", app.users.Login)
+	}
 
 	return route
 }

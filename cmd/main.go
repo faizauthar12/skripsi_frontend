@@ -6,6 +6,7 @@ const PORT = ":8080"
 
 type application struct {
     products *models.ProductsModel
+    users *models.UsersModel
 }
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 
     app := &application{
         products: &models.ProductsModel{DB: db},
+        users: &models.UsersModel{DB: db},
     }
 
 	route := app.routes()
