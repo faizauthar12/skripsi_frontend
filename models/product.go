@@ -13,12 +13,14 @@ type Product struct {
 	Title       string  `json:"title"`
 	Price       float32 `json:"price"`
 	Description string  `json:"description"`
+	Stock       int     `json:"stock"`
 }
 
 type ProductRequest struct {
 	Title       string  `json:"title" binding:"required"`
 	Price       float32 `json:"price" binding:"required"`
 	Description string  `json:"description" binding:"required"`
+	Stock       int     `json:"stock" binding:"required"`
 }
 
 type ProductsModel struct {
@@ -39,6 +41,7 @@ func (m *ProductsModel) Create(c *gin.Context) {
 		Title:       productRequest.Title,
 		Price:       productRequest.Price,
 		Description: productRequest.Description,
+		Stock:       productRequest.Stock,
 	}
 
 	err := m.DB.Create(&product).Error
