@@ -16,11 +16,11 @@ func (app *application) routes() *gin.Engine {
 		})
 	})
 
-    productRoutes := route.Group("/products")
-    {
-        productRoutes.GET("/", app.products.GetAll)
-        productRoutes.GET("/:productId", app.products.GetById)
-    }
+	productRoutes := route.Group("/products")
+	{
+		productRoutes.GET("/", app.products.GetAll)
+		productRoutes.GET("/:productId", app.products.GetById)
+	}
 
 	protectedProductRoutes := route.Group("/products")
 	{
@@ -34,6 +34,12 @@ func (app *application) routes() *gin.Engine {
 	{
 		userRoutes.POST("/register", app.users.Register)
 		userRoutes.POST("/login", app.users.Login)
+	}
+
+	protectedCartRoutes := route.Group("/cart")
+	{
+		protectedCartRoutes.Use(middlewares.JwtAuthMiddleware())
+		protectedCartRoutes.POST("/", app.cart.Create)
 	}
 
 	return route
