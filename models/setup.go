@@ -7,18 +7,18 @@ import (
 
 var DB *gorm.DB
 
-func OpenDB() (*gorm.DB, error){
+func OpenDB() (*gorm.DB, error) {
 	db, err := gorm.Open(sqlite.Open("dev.db"), &gorm.Config{})
 
 	if err != nil {
-        return nil, err
+		return nil, err
 	}
 
-    err = db.AutoMigrate(&Product{}, &User{})
+	err = db.AutoMigrate(&Product{}, &User{}, &Cart{})
 
-    if err != nil {
-        return nil, err
-    }
-    
-    return db, nil
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
