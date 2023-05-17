@@ -14,8 +14,8 @@ type Cart struct {
 }
 
 type CartRequest struct {
-	CartItems  []CartItem `json:"cart_items"`
-	GrandTotal float32    `json:"grand_total"`
+	CartItems  []CartItemRequest `json:"cart_items"`
+	GrandTotal float32           `json:"grand_total"`
 }
 
 type CartsModel struct {
@@ -34,9 +34,11 @@ func (m *CartsModel) Create(c *gin.Context) {
 	}
 
 	grandTotal := cartItem.getGrandTotal(cartRequest.CartItems)
-	
+
+	cartItems := cartItem.getCartItem(cartRequest.CartItems)
+
 	cart := Cart{
-		CartItems:  cartRequest.CartItems,
+		CartItems:  cartItems,
 		GrandTotal: grandTotal,
 	}
 
