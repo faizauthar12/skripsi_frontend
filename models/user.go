@@ -134,3 +134,25 @@ func (m *UsersModel) CurrentUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "success", "data": user})
 }
+
+func (m *UsersModel) getUser(c *gin.Context) (User, error) {
+	user_id, err := token.ExtractTokenID(c)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid Request Body",
+		})
+	}
+
+	var user User
+	if err := m.DB.First(&user, user_id).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "User not found",
+		})
+		return user, err
+	}
+
+	user.Password = ""
+
+	return user, nil
+}

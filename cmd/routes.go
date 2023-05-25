@@ -34,12 +34,15 @@ func (app *application) routes() *gin.Engine {
 	{
 		userRoutes.POST("/register", app.users.Register)
 		userRoutes.POST("/login", app.users.Login)
+		userRoutes.POST("/currentUser", app.users.CurrentUser)
 	}
 
 	protectedCartRoutes := route.Group("/cart")
 	{
 		protectedCartRoutes.Use(middlewares.JwtAuthMiddleware())
 		protectedCartRoutes.POST("/", app.cart.Create)
+		protectedCartRoutes.GET("/", app.cart.GetCart)
+		protectedCartRoutes.GET("/all", app.cart.GetAllCart)
 	}
 
 	return route
