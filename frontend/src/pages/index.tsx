@@ -1,10 +1,11 @@
 import * as React from 'react';
 
+import Carousel from '@/components/carousel/Carousel';
+import Footer from '@/components/layout/Footer';
+import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
-import ButtonLink from '@/components/links/ButtonLink';
-import UnderlineLink from '@/components/links/UnderlineLink';
-import UnstyledLink from '@/components/links/UnstyledLink';
+import Product from '@/components/product/Product';
 import Seo from '@/components/Seo';
 
 /**
@@ -14,7 +15,6 @@ import Seo from '@/components/Seo';
  * You can override the next-env if the type is important to you
  * @see https://stackoverflow.com/questions/68103844/how-to-override-next-js-svg-module-declaration
  */
-import Vercel from '~/svg/Vercel.svg';
 
 // !STARTERCONF -> Select !STARTERCONF and CMD + SHIFT + F
 // Before you begin editing, follow all comments with `STARTERCONF`,
@@ -23,51 +23,74 @@ import Vercel from '~/svg/Vercel.svg';
 export default function HomePage() {
   return (
     <Layout>
-      {/* <Seo templateTitle='Home' /> */}
-      <Seo />
+      <Seo templateTitle='Beranda' />
 
       <main>
-        <section className='bg-white'>
-          <div className='layout relative flex min-h-screen flex-col items-center justify-center py-12 text-center'>
-            <Vercel className='text-5xl' />
-            <h1 className='mt-4'>
-              Next.js + Tailwind CSS + TypeScript Starter
-            </h1>
-            <p className='mt-2 text-sm text-gray-800'>
-              A starter for Next.js, Tailwind CSS, and TypeScript with Absolute
-              Import, Seo, Link component, pre-configured with Husky{' '}
-            </p>
-            <p className='mt-2 text-sm text-gray-700'>
-              <ArrowLink href='https://github.com/theodorusclarence/ts-nextjs-tailwind-starter'>
-                See the repository
-              </ArrowLink>
-            </p>
+        <Header />
 
-            <ButtonLink className='mt-6' href='/components' variant='light'>
-              See all components
-            </ButtonLink>
+        <div className='layout relative flex min-h-screen flex-col'>
+          <Carousel images={[]} />
 
-            <UnstyledLink
-              href='https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2Ftheodorusclarence%2Fts-nextjs-tailwind-starter'
-              className='mt-4'
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                width='92'
-                height='32'
-                src='https://vercel.com/button'
-                alt='Deploy with Vercel'
+          {/*Produk Unggulan */}
+          <div className='flex-col'>
+            <div className='text-[20px] font-normal text-black'>
+              Produk Unggulan
+            </div>
+            <div className='mt-[15px] grid grid-cols-2 gap-10 md:grid-cols-3 lg:grid-cols-4'>
+              <Product
+                description='Lorem ipsum dolor sit amet consectetur.'
+                price='300.0000'
+                type='aksesoris jamtangan'
               />
-            </UnstyledLink>
 
-            <footer className='absolute bottom-2 text-gray-700'>
-              © {new Date().getFullYear()} By{' '}
-              <UnderlineLink href='https://theodorusclarence.com?ref=tsnextstarter'>
-                Theodorus Clarence
-              </UnderlineLink>
-            </footer>
+              <Product
+                description='Lorem ipsum dolor sit amet consectetur.'
+                price='300.0000'
+                type='aksesoris jamtangan'
+              />
+
+              <Product
+                description='Lorem ipsum dolor sit amet consectetur.'
+                price='300.0000'
+                type='aksesoris jamtangan'
+              />
+
+              <Product
+                description='Lorem ipsum dolor sit amet consectetur.'
+                price='300.0000'
+                type='aksesoris jamtangan'
+              />
+            </div>
+
+            <div className='mt-[64px] text-right font-normal text-black '>
+              <ArrowLink href='/'>Lihat Semua Produk</ArrowLink>
+            </div>
           </div>
-        </section>
+
+          {/*About */}
+          <div className='my-[150px] text-center text-[36px] font-normal text-black'>
+            <div className='text-[36px] font-normal text-black'>About</div>
+            <div className='mt-10 text-center text-[24px] font-normal text-black'>
+              Lorem ipsum dolor sit amet consectetur. Etiam in varius bibendum
+              id bibendum. Aliquam neque elementum mi porta. Eu egestas dui
+              nulla erat. Rhoncus vitae et in urna nec lorem. Pharetra mauris
+              placerat commodo placerat in malesuada. Viverra elit mauris
+              consectetur mattis curabitur tincidunt id. Odio faucibus aliquet
+              sit tellus quam. Faucibus gravida est a pellentesque ac et diam
+              ornare pellentesque. Sit turpis leo eros est mauris tristique
+              adipiscing. Quis eget pulvinar pharetra egestas bibendum proin.
+              Proin vel arcu consequat sed fermentum pellentesque. Amet non id
+              ullamcorper felis. Pulvinar etiam netus diam varius diam elementum
+              elit ullamcorper id. Sit nisi facilisi viverra eros. Quisque
+              pellentesque neque at urna. Quis velit neque ligula consequat
+              venenatis non. Nibh gravida cras nisl sagittis. Sed cursus elit
+              libero lorem non amet. Diam platea at ornare ac tincidunt
+              consequat. Lacinia mauris mauris volutpat orci.
+            </div>
+          </div>
+        </div>
+
+        <Footer />
       </main>
     </Layout>
   );
