@@ -22,10 +22,10 @@ export default function Product({
   height,
 }: ProductProps) {
   return (
-    <div className='inline-flex h-[346px] w-[241px] flex-col items-center justify-start gap-2.5 bg-white'>
+    <div className='hober inline-flex h-[full] w-[241px] flex-col items-center justify-start gap-2.5 bg-white'>
       <NextImage
         useSkeleton
-        className='w-241 md:w- h-60'
+        className='w-241 md:w- h-60 hover:contrast-50	'
         src={src ? src : '/images/product.png'}
         width={width ? width : '241'}
         height={height ? height : '240'}

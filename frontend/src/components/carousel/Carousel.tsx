@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useWindowSize } from '@/lib/helper';
+import { useWindowSize } from '@/lib/windows';
 
 import NextImage from '@/components/NextImage';
 
