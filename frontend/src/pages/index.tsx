@@ -63,7 +63,7 @@ export default function HomePage() {
             </div>
 
             <div className='mt-[64px] text-right font-normal text-black '>
-              <ArrowLink href='/'>Lihat Semua Produk</ArrowLink>
+              <ArrowLink href='/produk'>Lihat Semua Produk</ArrowLink>
             </div>
           </div>
 
