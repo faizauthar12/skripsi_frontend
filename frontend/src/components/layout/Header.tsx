@@ -3,7 +3,8 @@ import * as React from 'react';
 import UnstyledLink from '@/components/links/UnstyledLink';
 
 const links = [
-  { href: '/', label: 'Route 1' },
+  { href: '/produk', label: 'Produk' },
+  { href: '/', label: 'Keranjang' },
 ];
 
 export default function Header() {
