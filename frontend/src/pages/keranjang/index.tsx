@@ -14,7 +14,7 @@ export default function ProductPage() {
       <main>
         <Header />
 
-        <div className='layout relative flex h-screen flex-col'>
+        <div className='layout relative flex min-h-screen flex-col'>
           {/* Page title  */}
 
           <div className='font-bold'>Keranjang</div>
