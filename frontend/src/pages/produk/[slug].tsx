@@ -27,10 +27,11 @@ export default function ProductPage() {
       <main>
         <Header />
 
-        <div className='layout mt-10 flex min-h-screen'>
-          <div className='flex flex-row'>
+        <div className='layout relative flex h-screen flex-col'>
+          <div className='mt-5 grid grid-cols-2 gap-5 md:grid-cols-3 '>
             {/* Image */}
-            <div className='me-20 flex-none'>
+
+            {/* <div className='flex flex-col'>
               <NextImage
                 useSkeleton
                 className='w-320 md:w-200'
@@ -39,52 +40,64 @@ export default function ProductPage() {
                 height='300'
                 alt='Icon'
               />
-            </div>
+            </div> */}
+
+            <NextImage
+              useSkeleton
+              className='w-320 md:w-200'
+              src='/images/product.png'
+              width='320'
+              height='300'
+              alt='Icon'
+            />
 
             {/* Deskripsi */}
-            <div className='me-28 flex-1 space-y-5'>
-              <div>{'<Super Thin> Case for iPhone 13 Series'}</div>
-              <div className='text-sm'>IDR 263,000</div>
-              <div className='text-sm'>
-                {
-                  "Beyond Indonesia's first collection that embodies our belief in simplicity and functionality. The thinnest case in the market, specially craftedf using < B > tech material. Your everyday essential. No added bulk."
-                }
-              </div>
 
-              {/* Size */}
-              <div className='text-sm font-bold'>SIZE</div>
-              <div className='space-x-2'>
-                <Button variant='light'>L</Button>
-                <Button variant='light'>M</Button>
-                <Button variant='light'>XL</Button>
-              </div>
+            <div className='col-span-2'>
+              <div className='me-28 flex-1 space-y-5'>
+                <div>{'<Super Thin> Case for iPhone 13 Series'}</div>
+                <div className='text-sm'>IDR 263,000</div>
+                <div className='text-sm'>
+                  {
+                    "Beyond Indonesia's first collection that embodies our belief in simplicity and functionality. The thinnest case in the market, specially craftedf using < B > tech material. Your everyday essential. No added bulk."
+                  }
+                </div>
 
-              {/* Quantity */}
-              <div className='text-sm font-bold'>Quantity</div>
-              <div className='inline-block'>
-                <div className='just rounded border border-gray-200'>
-                  <button
-                    type='button'
-                    className='w-10 leading-10 text-gray-600 transition hover:opacity-75'
-                    onClick={handleDecrement}
-                  >
-                    -
-                  </button>
+                <div className='text-sm font-bold'>SIZE</div>
+                <div className='space-x-2'>
+                  <Button variant='light'>L</Button>
+                  <Button variant='light'>M</Button>
+                  <Button variant='light'>XL</Button>
+                </div>
 
-                  <input
-                    type='number'
-                    id='Quantity'
-                    value={quantity}
-                    className='w-16 border-transparent text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
-                  />
+                {/* Quantity */}
 
-                  <button
-                    type='button'
-                    className='w-10 leading-10 text-gray-600 transition hover:opacity-75'
-                    onClick={handleIncrement}
-                  >
-                    +
-                  </button>
+                <div className='text-sm font-bold'>Quantity</div>
+                <div className='inline-block'>
+                  <div className='just rounded border border-gray-200'>
+                    <button
+                      type='button'
+                      className='w-6 leading-10 text-gray-600 transition hover:opacity-75'
+                      onClick={handleDecrement}
+                    >
+                      -
+                    </button>
+
+                    <input
+                      type='number'
+                      id='Quantity'
+                      value={quantity}
+                      className='w-10 border-transparent text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none'
+                    />
+
+                    <button
+                      type='button'
+                      className='w-6 leading-10 text-gray-600 transition hover:opacity-75'
+                      onClick={handleIncrement}
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
