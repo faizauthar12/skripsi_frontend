@@ -19,7 +19,7 @@ export default function ProductPage() {
 
           <div className='font-bold'>Keranjang</div>
 
-          <div className='mt-5 grid grid-cols-1 gap-5 md:grid-cols-3 '>
+          <div className='sd: mt-5 grid grid-cols-1 gap-5 md:grid-cols-3 '>
             <div className='col-span-2 divide-y divide-solid'>
               <div className='flex justify-between'>
                 <div>Terdapat 1 Barang</div>
@@ -33,7 +33,7 @@ export default function ProductPage() {
               </div>
             </div>
 
-            <div>
+            <div className='sd: sticky bottom-0 col-span-2 bg-white py-5 md:col-span-1'>
               <div className='flex flex-col gap-3 '>
                 <div className='flex flex-row justify-between'>
                   <div>Subtotal</div>
