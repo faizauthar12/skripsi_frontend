@@ -16,6 +16,7 @@ type ButtonProps = {
   rightIcon?: IconType;
   leftIconClassName?: string;
   rightIconClassName?: string;
+  textCenter?: boolean;
 } & React.ComponentPropsWithRef<'button'>;
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -32,6 +33,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon: RightIcon,
       leftIconClassName,
       rightIconClassName,
+      textCenter,
       ...rest
     },
     ref
@@ -48,6 +50,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           'focus-visible:ring-primary-500 focus:outline-none focus-visible:ring',
           'shadow-sm',
           'transition-colors duration-75',
+          textCenter && 'justify-center',
           //#region  //*=========== Size ===========
           [
             size === 'base' && ['px-3 py-1.5', 'text-sm md:text-base'],
