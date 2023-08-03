@@ -39,10 +39,10 @@ export default function CartItem({
 
   return (
     <div>
-      <div className='mt-5 grid grid-cols-4 gap-5'>
+      <div className='mb-5 mt-5 grid grid-cols-4 gap-5'>
         <NextImage
           useSkeleton
-          className='w-241 md:w- h-60 '
+          className='w-240 md:w-'
           src={src ? src : '/images/product.png'}
           width={width ? width : '240'}
           height={height ? height : '240'}

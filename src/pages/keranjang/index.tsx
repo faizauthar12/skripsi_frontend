@@ -6,7 +6,7 @@ import Layout from '@/components/layout/Layout';
 import PrimaryLink from '@/components/links/PrimaryLink';
 import Seo from '@/components/Seo';
 
-export default function ProductPage() {
+export default function CartPage() {
   return (
     <Layout>
       <Seo templateTitle='Keranjang' />
