@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useState } from 'react';
 
 import Carousel from '@/components/carousel/Carousel';
 import Footer from '@/components/layout/Footer';
@@ -8,6 +8,10 @@ import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import Product from '@/components/product/Product';
 import Seo from '@/components/Seo';
+
+import { useDidMount } from '@/utils/object';
+
+import { ProductItem } from '@/types/product/product';
 
 /**
  * SVGR Support
@@ -22,19 +26,22 @@ import Seo from '@/components/Seo';
 // to customize the default configuration.
 
 export default function HomePage() {
-  const callAPI = async () => {
-    try {
-      const res = await fetch('http://localhost:8080/product');
-      const data = await res.json();
-      console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [products, setProducts] = useState<ProductItem[]>([]);
 
-  useEffect(() => {
-    callAPI;
+  const handleLoadProduct = React.useCallback(async () => {
+    const response = await fetch('http://localhost:8080/product/');
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+
+    const data = await response.json();
+    setProducts(data.data.products);
   }, []);
+
+  useDidMount(() => {
+    handleLoadProduct();
+  });
+
   return (
     <Layout>
       <Seo templateTitle='Beranda' />
@@ -51,29 +58,20 @@ export default function HomePage() {
               Produk Unggulan
             </div>
             <div className='mt-[15px] grid grid-cols-2 gap-10 md:grid-cols-3 lg:grid-cols-4'>
-              <Product
-                description='Lorem ipsum dolor sit amet consectetur.'
-                price='300.0000'
-                type='aksesoris jamtangan'
-              />
-
-              <Product
-                description='Lorem ipsum dolor sit amet consectetur.'
-                price='300.0000'
-                type='aksesoris jamtangan'
-              />
-
-              <Product
-                description='Lorem ipsum dolor sit amet consectetur.'
-                price='300.0000'
-                type='aksesoris jamtangan'
-              />
-
-              <Product
-                description='Lorem ipsum dolor sit amet consectetur.'
-                price='300.0000'
-                type='aksesoris jamtangan'
-              />
+              {products.length > 0 ? (
+                products
+                  .slice(0, 4)
+                  .map((product) => (
+                    <Product
+                      key={product.UUID}
+                      description={product.ProductDescription}
+                      price={product.ProductPrice.toString()}
+                      type={product.ProductCategory}
+                    />
+                  ))
+              ) : (
+                <p>No products found.</p>
+              )}
             </div>
 
             <div className='mt-[64px] text-right font-normal text-black '>
