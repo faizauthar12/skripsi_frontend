@@ -27,6 +27,21 @@ export default function ProductPage() {
     }
   }, []);
 
+  const handleLoadProductWithFilter = useCallback(async (filter: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/product?category=${filter}`
+      );
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setProducts(data.data.products);
+      }
+    } catch (error) {
+      setProducts([]);
+    }
+  }, []);
+
   useDidMount(() => {
     handleLoadProduct();
   });
@@ -44,15 +59,28 @@ export default function ProductPage() {
               <UnstyledLink
                 href='/produk'
                 className='font-bold hover:text-gray-600'
+                onClick={handleLoadProduct}
               >
                 Kategori
               </UnstyledLink>
 
-              <UnstyledLink href='/produk' className=' hover:text-gray-600'>
+              <UnstyledLink
+                href='/produk'
+                className=' hover:text-gray-600'
+                onClick={() => {
+                  handleLoadProductWithFilter('pria');
+                }}
+              >
                 Pria
               </UnstyledLink>
 
-              <UnstyledLink href='/produk' className=' hover:text-gray-600'>
+              <UnstyledLink
+                href='/produk'
+                className=' hover:text-gray-600'
+                onClick={() => {
+                  handleLoadProductWithFilter('pria');
+                }}
+              >
                 Wanita
               </UnstyledLink>
             </div>
