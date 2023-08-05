@@ -1,8 +1,11 @@
+import { useRouter } from 'next/router';
+
 import NextImage from '@/components/NextImage';
 
 type SafeNumber = number | `${number}`;
 
 type ProductProps = {
+  uuid: string;
   type: string;
   description: string;
   price: string;
@@ -13,6 +16,7 @@ type ProductProps = {
 };
 
 export default function Product({
+  uuid,
   description,
   type,
   price,
@@ -21,8 +25,14 @@ export default function Product({
   width,
   height,
 }: ProductProps) {
+  const router = useRouter();
   return (
-    <div className='hober inline-flex h-[full] w-[241px] flex-col items-center justify-start gap-2.5 bg-white'>
+    <div
+      className='hober inline-flex h-[full] w-[241px] flex-col items-center justify-start gap-2.5 bg-white'
+      onClick={() => {
+        router.push(`/produk/${uuid}`);
+      }}
+    >
       <NextImage
         useSkeleton
         className='w-241 md:w- h-60 hover:contrast-50	'

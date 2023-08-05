@@ -100,6 +100,7 @@ export default function ProductPage() {
                     .map((product) => (
                       <Product
                         key={product.UUID}
+                        uuid={product.UUID}
                         description={product.ProductDescription}
                         price={product.ProductPrice.toString()}
                         type={product.ProductCategory}
