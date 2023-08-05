@@ -15,13 +15,16 @@ export default function ProductPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
 
   const handleLoadProduct = useCallback(async () => {
-    const response = await fetch('http://localhost:8080/product/');
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
-    }
+    try {
+      const response = await fetch('http://localhost:8080/product/');
 
-    const data = await response.json();
-    setProducts(data.data.products);
+      if (response.status === 200) {
+        const data = await response.json();
+        setProducts(data.data.products);
+      }
+    } catch (error) {
+      setProducts([]);
+    }
   }, []);
 
   useDidMount(() => {
@@ -69,7 +72,7 @@ export default function ProductPage() {
                       />
                     ))
                 ) : (
-                  <p>No products found.</p>
+                  <div>No products found.</div>
                 )}
               </div>
             </div>
