@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import Button from '@/components/buttons/Button';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
-
-import { useDidUpdate } from '@/utils/object';
 
 import { ProductItem } from '@/types/product/product';
 
@@ -31,7 +29,7 @@ export default function ProductPage() {
     }
   }, [slug]);
 
-  useDidUpdate(() => {
+  useEffect(() => {
     if (slug) {
       handleLoadProduct();
     }
