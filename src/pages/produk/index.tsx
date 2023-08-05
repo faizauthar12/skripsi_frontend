@@ -83,7 +83,7 @@ export default function ProductPage() {
                 href='/produk'
                 className=' hover:text-gray-600'
                 onClick={() => {
-                  handleLoadProductWithFilter('pria');
+                  handleLoadProductWithFilter('Wanita');
                   console.log('Filterd: Wanita');
                 }}
               >
