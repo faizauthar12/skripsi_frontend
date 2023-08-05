@@ -105,7 +105,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <Button variant='dark' textCenter onClick={onSubmit}>
-                  Beli
+                  Checkout
                 </Button>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 
 import Carousel from '@/components/carousel/Carousel';
 import Footer from '@/components/layout/Footer';
@@ -21,6 +22,19 @@ import Seo from '@/components/Seo';
 // to customize the default configuration.
 
 export default function HomePage() {
+  const callAPI = async () => {
+    try {
+      const res = await fetch('http://localhost:8080/product');
+      const data = await res.json();
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    callAPI;
+  }, []);
   return (
     <Layout>
       <Seo templateTitle='Beranda' />
