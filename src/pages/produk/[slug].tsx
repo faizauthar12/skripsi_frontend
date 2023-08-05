@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import Button from '@/components/buttons/Button';
 import Footer from '@/components/layout/Footer';
@@ -7,8 +7,35 @@ import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
 
+import { useDidUpdate } from '@/utils/object';
+
+import { ProductItem } from '@/types/product/product';
+
 export default function ProductPage() {
   const router = useRouter();
+
+  const { slug } = router.query;
+
+  const [product, setProduct] = useState<ProductItem>();
+
+  const handleLoadProduct = useCallback(async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/product/${slug}`);
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setProduct(data.data.product);
+      }
+    } catch (error) {
+      setProduct(undefined);
+    }
+  }, [slug]);
+
+  useDidUpdate(() => {
+    if (slug) {
+      handleLoadProduct();
+    }
+  }, [slug, handleLoadProduct]);
 
   const [quantity, setQuantity] = useState(0);
 
@@ -55,13 +82,9 @@ export default function ProductPage() {
 
             <div className='col-span-2'>
               <div className='me-28 flex-1 space-y-5'>
-                <div>{'<Super Thin> Case for iPhone 13 Series'}</div>
-                <div className='text-sm'>IDR 263,000</div>
-                <div className='text-sm'>
-                  {
-                    "Beyond Indonesia's first collection that embodies our belief in simplicity and functionality. The thinnest case in the market, specially craftedf using < B > tech material. Your everyday essential. No added bulk."
-                  }
-                </div>
+                <div>{product?.ProductName}</div>
+                <div className='text-sm'>{product?.ProductPrice}</div>
+                <div className='text-sm'>{product?.ProductDescription} </div>
 
                 <div className='text-sm font-bold'>SIZE</div>
                 <div className='space-x-2'>

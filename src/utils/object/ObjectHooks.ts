@@ -1,4 +1,3 @@
-import {ObjectMapRef} from '@types';
 import {
   DependencyList,
   EffectCallback,
@@ -8,6 +7,8 @@ import {
   useRef,
   useState,
 } from 'react';
+
+import { ObjectMapRef } from '@/types/object';
 
 export function useDidMount(effect: EffectCallback) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,8 +35,9 @@ export function useMapRef<T extends object>(data: T) {
   const handleUpdateData = useCallback(() => setLastUpdate(new Date()), []);
 
   const handleSetData = useCallback(
-    (map: Partial<T>, update: boolean = false) => {
+    (map: Partial<T>, update = false) => {
       for (const [key, value] of Object.entries(map)) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         refData.current[key] = value;
       }
@@ -44,7 +46,7 @@ export function useMapRef<T extends object>(data: T) {
         handleUpdateData();
       }
     },
-    [handleUpdateData],
+    [handleUpdateData]
   );
 
   return useMemo<ObjectMapRef<T>>(
@@ -54,7 +56,7 @@ export function useMapRef<T extends object>(data: T) {
       map: refData,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [lastUpdate, handleUpdateData, handleSetData],
+    [lastUpdate, handleUpdateData, handleSetData]
   );
 }
 
@@ -68,7 +70,7 @@ export function useDebounce(
     onDebounce(dif: number): void;
     disabled?: boolean;
   },
-  deps: DependencyList,
+  deps: DependencyList
 ) {
   const timestamp = useRef(new Date().getTime());
 
