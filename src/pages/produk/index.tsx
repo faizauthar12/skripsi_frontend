@@ -21,6 +21,8 @@ export default function ProductPage() {
       if (response.status === 200) {
         const data = await response.json();
         setProducts(data.data.products);
+      } else {
+        setProducts([]);
       }
     } catch (error) {
       setProducts([]);
@@ -36,6 +38,8 @@ export default function ProductPage() {
       if (response.status === 200) {
         const data = await response.json();
         setProducts(data.data.products);
+      } else {
+        setProducts([]);
       }
     } catch (error) {
       setProducts([]);
@@ -69,6 +73,7 @@ export default function ProductPage() {
                 className=' hover:text-gray-600'
                 onClick={() => {
                   handleLoadProductWithFilter('pria');
+                  console.log('Filterd: Pria');
                 }}
               >
                 Pria
@@ -79,6 +84,7 @@ export default function ProductPage() {
                 className=' hover:text-gray-600'
                 onClick={() => {
                   handleLoadProductWithFilter('pria');
+                  console.log('Filterd: Wanita');
                 }}
               >
                 Wanita

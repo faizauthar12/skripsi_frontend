@@ -35,6 +35,8 @@ export default function HomePage() {
       if (response.status === 200) {
         const data = await response.json();
         setProducts(data.data.products);
+      } else {
+        setProducts([]);
       }
     } catch (error) {
       setProducts([]);
