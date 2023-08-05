@@ -1,3 +1,5 @@
+import { useCallback, useState } from 'react';
+
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
@@ -5,7 +7,27 @@ import UnstyledLink from '@/components/links/UnstyledLink';
 import Product from '@/components/product/Product';
 import Seo from '@/components/Seo';
 
+import { useDidMount } from '@/utils/object';
+
+import { ProductItem } from '@/types/product/product';
+
 export default function ProductPage() {
+  const [products, setProducts] = useState<ProductItem[]>([]);
+
+  const handleLoadProduct = useCallback(async () => {
+    const response = await fetch('http://localhost:8080/product/');
+    if (!response.ok) {
+      throw new Error('Failed to fetch data');
+    }
+
+    const data = await response.json();
+    setProducts(data.data.products);
+  }, []);
+
+  useDidMount(() => {
+    handleLoadProduct();
+  });
+
   return (
     <Layout>
       <Seo templateTitle='Produk' />
@@ -35,77 +57,20 @@ export default function ProductPage() {
             <div className='flex flex-col'>
               <div className='font-bold'>Semua Produk</div>
               <div className='mt-[27px] grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3'>
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
-
-                <Product
-                  description='Lorem ipsum dolor sit amet consectetur.'
-                  price='300.0000'
-                  type='aksesoris jamtangan'
-                />
+                {products.length > 0 ? (
+                  products
+                    .slice(0, 4)
+                    .map((product) => (
+                      <Product
+                        key={product.UUID}
+                        description={product.ProductDescription}
+                        price={product.ProductPrice.toString()}
+                        type={product.ProductCategory}
+                      />
+                    ))
+                ) : (
+                  <p>No products found.</p>
+                )}
               </div>
             </div>
           </div>
