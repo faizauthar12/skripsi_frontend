@@ -1,3 +1,4 @@
+import { getCookie, setCookie } from 'cookies-next';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -7,8 +8,9 @@ import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
 
-import { useDidMount } from '@/utils/object';
+import { useDidMount, useDidUpdate } from '@/utils/object';
 
+import { CartCookie } from '@/types/cart/CartCookie';
 import { ProductItem } from '@/types/product/product';
 import { SizeChartCategory } from '@/types/product/SizeChart';
 
@@ -22,6 +24,20 @@ export default function ProductPage() {
   const [selectedSizeChart, setSelectedSizeChart] =
     useState<SizeChartCategory>();
 
+  const [cartCookie, setCartCookie] = useState<CartCookie[]>([]);
+
+  const handleGetCurrentCart = useCallback(() => {
+    console.log('handleGetCurrentCart');
+    const currentCart = getCookie('cart') as string;
+
+    if (currentCart) {
+      const currentCartParsed: CartCookie = JSON.parse(currentCart);
+
+      setCartCookie([...cartCookie, currentCartParsed]);
+    }
+  }, [cartCookie]);
+
+  // run it once in the beginning
   useDidMount(() => {
     setSizeChartData([
       { id: 1, size: 'XS' },
@@ -30,6 +46,7 @@ export default function ProductPage() {
       { id: 4, size: 'L' },
       { id: 5, size: 'XL' },
     ]);
+    handleGetCurrentCart();
   });
 
   const handleLoadProduct = useCallback(async () => {
@@ -85,6 +102,57 @@ export default function ProductPage() {
       )),
     [handleSelectSizeChart, selectedSizeChart, sizeChartData]
   );
+
+  const handleChangedCart = useCallback(() => {
+    if (product && selectedSizeChart && quantity > 0) {
+      console.log('setCartCookie');
+      setCartCookie([
+        {
+          ProductUUID: product.UUID,
+          Quantity: quantity,
+          Size: selectedSizeChart.size,
+        },
+      ]);
+    }
+  }, [product, quantity, selectedSizeChart]);
+
+  const handleSaveCart = useCallback(() => {
+    console.log('handleSaveCart');
+    if (product && selectedSizeChart && quantity > 0) {
+      const updatedCartCookie = [...cartCookie];
+      const existingCartItem = updatedCartCookie.find(
+        (item) => item.ProductUUID === product.UUID
+      );
+
+      if (existingCartItem) {
+        // Update the quantity and the size for the existing product
+        existingCartItem.Size = selectedSizeChart.size;
+        existingCartItem.Quantity = quantity;
+      } else {
+        // Add a new item to the cart
+        updatedCartCookie.push({
+          ProductUUID: product.UUID,
+          Quantity: quantity,
+          Size: selectedSizeChart.size,
+        });
+      }
+
+      setCartCookie(updatedCartCookie);
+    }
+
+    const parsedCartCookie = JSON.stringify(cartCookie);
+    setCookie('cart', parsedCartCookie);
+  }, [cartCookie, product, quantity, selectedSizeChart]);
+
+  // save cookies if any selectedSizeChart and Quantity changed
+  useDidUpdate(() => {
+    handleChangedCart();
+    handleSaveCart();
+  }, [selectedSizeChart, quantity]);
+
+  useDidUpdate(() => {
+    console.log(cartCookie);
+  }, [cartCookie]);
 
   return (
     <Layout>
