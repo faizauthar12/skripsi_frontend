@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/buttons/Button';
 import Footer from '@/components/layout/Footer';
@@ -7,7 +7,10 @@ import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
 
+import { useDidMount } from '@/utils/object';
+
 import { ProductItem } from '@/types/product/product';
+import { SizeChartCategory } from '@/types/product/SizeChart';
 
 export default function ProductPage() {
   const router = useRouter();
@@ -15,6 +18,19 @@ export default function ProductPage() {
   const { slug } = router.query;
 
   const [product, setProduct] = useState<ProductItem>();
+  const [sizeChartData, setSizeChartData] = useState<SizeChartCategory[]>([]);
+  const [selectedSizeChart, setSelectedSizeChart] =
+    useState<SizeChartCategory>();
+
+  useDidMount(() => {
+    setSizeChartData([
+      { id: 1, size: 'XS' },
+      { id: 2, size: 'S' },
+      { id: 3, size: 'M' },
+      { id: 4, size: 'L' },
+      { id: 5, size: 'XL' },
+    ]);
+  });
 
   const handleLoadProduct = useCallback(async () => {
     try {
@@ -46,6 +62,30 @@ export default function ProductPage() {
   const handleIncrement = () => {
     setQuantity(quantity + 1);
   };
+
+  const handleSelectSizeChart = useCallback(
+    (sizeType: SizeChartCategory) => {
+      setSelectedSizeChart(
+        selectedSizeChart === sizeType ? undefined : sizeType
+      );
+    },
+    [selectedSizeChart]
+  );
+
+  const renderSizeChart = useMemo(
+    () =>
+      sizeChartData.map((size) => (
+        <div key={size.id}>
+          <Button
+            variant={selectedSizeChart === size ? 'primary' : 'light'}
+            onClick={() => handleSelectSizeChart(size)}
+          >
+            {size.size}
+          </Button>
+        </div>
+      )),
+    [handleSelectSizeChart, selectedSizeChart, sizeChartData]
+  );
 
   return (
     <Layout>
@@ -85,11 +125,7 @@ export default function ProductPage() {
                 <div className='text-sm'>{product?.ProductDescription} </div>
 
                 <div className='text-sm font-bold'>SIZE</div>
-                <div className='space-x-2'>
-                  <Button variant='light'>L</Button>
-                  <Button variant='light'>M</Button>
-                  <Button variant='light'>XL</Button>
-                </div>
+                <div className='flex space-x-2'>{renderSizeChart}</div>
 
                 {/* Quantity */}
 
