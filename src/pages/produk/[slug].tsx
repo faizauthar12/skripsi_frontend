@@ -75,14 +75,13 @@ export default function ProductPage() {
   const renderSizeChart = useMemo(
     () =>
       sizeChartData.map((size) => (
-        <div key={size.id}>
-          <Button
-            variant={selectedSizeChart === size ? 'primary' : 'light'}
-            onClick={() => handleSelectSizeChart(size)}
-          >
-            {size.size}
-          </Button>
-        </div>
+        <Button
+          key={size.id}
+          variant={selectedSizeChart === size ? 'primary' : 'light'}
+          onClick={() => handleSelectSizeChart(size)}
+        >
+          {size.size}
+        </Button>
       )),
     [handleSelectSizeChart, selectedSizeChart, sizeChartData]
   );
