@@ -31,11 +31,10 @@ export default function ProductPage() {
     const currentCart = getCookie('cart') as string;
 
     if (currentCart) {
-      const currentCartParsed: CartCookie = JSON.parse(currentCart);
-
-      setCartCookie([...cartCookie, currentCartParsed]);
+      const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
+      setCartCookie(currentCartParsed);
     }
-  }, [cartCookie]);
+  }, []);
 
   // run it once in the beginning
   useDidMount(() => {
@@ -105,43 +104,41 @@ export default function ProductPage() {
 
   const handleChangedCart = useCallback(() => {
     if (product && selectedSizeChart && quantity > 0) {
-      console.log('setCartCookie');
-      setCartCookie([
-        {
-          ProductUUID: product.UUID,
-          Quantity: quantity,
-          Size: selectedSizeChart.size,
-        },
-      ]);
+      console.log('handleChangedCart');
+      const updatedCart = cartCookie.map((item) => {
+        if (item.ProductUUID === product.UUID) {
+          return {
+            ...item,
+            Quantity: quantity,
+            Size: selectedSizeChart.size,
+          };
+        }
+        return item;
+      });
+
+      setCartCookie(updatedCart);
     }
-  }, [product, quantity, selectedSizeChart]);
+  }, [product, quantity, selectedSizeChart, cartCookie]);
 
   const handleSaveCart = useCallback(() => {
     console.log('handleSaveCart');
     if (product && selectedSizeChart && quantity > 0) {
-      const updatedCartCookie = [...cartCookie];
-      const existingCartItem = updatedCartCookie.find(
-        (item) => item.ProductUUID === product.UUID
+      const updatedCartCookie = cartCookie.filter(
+        (item) => item.ProductUUID !== product.UUID
       );
 
-      if (existingCartItem) {
-        // Update the quantity and the size for the existing product
-        existingCartItem.Size = selectedSizeChart.size;
-        existingCartItem.Quantity = quantity;
-      } else {
-        // Add a new item to the cart
-        updatedCartCookie.push({
-          ProductUUID: product.UUID,
-          Quantity: quantity,
-          Size: selectedSizeChart.size,
-        });
-      }
+      updatedCartCookie.push({
+        ProductUUID: product.UUID,
+        ProductName: product.ProductName,
+        Quantity: quantity,
+        Size: selectedSizeChart.size,
+      });
 
       setCartCookie(updatedCartCookie);
-    }
 
-    const parsedCartCookie = JSON.stringify(cartCookie);
-    setCookie('cart', parsedCartCookie);
+      const parsedCartCookie = JSON.stringify(updatedCartCookie);
+      setCookie('cart', parsedCartCookie);
+    }
   }, [cartCookie, product, quantity, selectedSizeChart]);
 
   // save cookies if any selectedSizeChart and Quantity changed
