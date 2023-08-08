@@ -64,8 +64,19 @@ export default function ProductPage() {
   useEffect(() => {
     if (slug) {
       handleLoadProduct();
+
+      const existingCartItem = cartCookie.find(
+        (item) => item.ProductUUID === slug
+      );
+
+      if (existingCartItem) {
+        setQuantity(existingCartItem.Quantity);
+        setSelectedSizeChart(
+          sizeChartData.find((size) => size.size === existingCartItem.Size)
+        );
+      }
     }
-  }, [slug, handleLoadProduct]);
+  }, [slug, handleLoadProduct, cartCookie, sizeChartData]);
 
   const [quantity, setQuantity] = useState(0);
 
