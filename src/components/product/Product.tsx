@@ -2,6 +2,8 @@ import { useRouter } from 'next/router';
 
 import NextImage from '@/components/NextImage';
 
+import { formatCurrency } from '@/utils/currency/CurrencyHelper';
+
 type SafeNumber = number | `${number}`;
 
 type ProductProps = {
@@ -47,7 +49,7 @@ export default function Product({
           {description}
         </div>
         <div className='w-[211px] text-[10px] font-light text-black'>
-          IDR Rp. {price}
+          {formatCurrency(price, undefined, undefined, undefined, 2)}
         </div>
       </div>
     </div>
