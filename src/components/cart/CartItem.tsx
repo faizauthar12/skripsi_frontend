@@ -17,6 +17,8 @@ type CartItemProps = {
   alt?: string;
   width?: SafeNumber;
   height?: SafeNumber;
+  onChange: (cart: CartCookie) => void;
+  onDelete: (productUUID: string) => void;
 };
 
 export default function CartItem({
@@ -25,6 +27,8 @@ export default function CartItem({
   alt,
   width,
   height,
+  onChange,
+  onDelete,
 }: CartItemProps) {
   const router = useRouter();
   let subTotal = 0;
@@ -37,11 +41,19 @@ export default function CartItem({
   const handleDecrement = () => {
     if (quantity > 0) {
       setQuantity(quantity - 1);
+      const updatedCart = { ...cart, ProductQuantity: quantity - 1 };
+      onChange(updatedCart);
     }
   };
 
   const handleIncrement = () => {
     setQuantity(quantity + 1);
+    const updatedCart = { ...cart, ProductQuantity: quantity + 1 };
+    onChange(updatedCart);
+  };
+
+  const handleDelete = () => {
+    onDelete(cart.ProductUUID);
   };
 
   return (
@@ -116,7 +128,7 @@ export default function CartItem({
               </div>
             </div>
             <div className='flex flex-row justify-end'>
-              <Button variant='light'>
+              <Button variant='light' onClick={handleDelete}>
                 <MdOutlineDeleteForever />
               </Button>
             </div>

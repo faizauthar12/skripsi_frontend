@@ -1,5 +1,5 @@
-import { getCookie } from 'cookies-next';
-import { useCallback, useMemo, useState } from 'react';
+import { getCookie, setCookie } from 'cookies-next';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/buttons/Button';
 import CartItem from '@/components/cart/CartItem';
@@ -38,19 +38,54 @@ export default function CartPage() {
     handleGetCurrentCart();
   });
 
+  useEffect(() => {
+    console.log(cartCookie);
+  }, [cartCookie]);
+
+  const handleChangedCart = useCallback(
+    (updatedCart: CartCookie) => {
+      const updatedCartList = cartCookie.map((item) =>
+        item.ProductUUID === updatedCart.ProductUUID ? updatedCart : item
+      );
+      setCartCookie(updatedCartList);
+      const updatedCartString = JSON.stringify(updatedCartList);
+      setCookie('cart', updatedCartString);
+    },
+    [cartCookie]
+  );
+
+  const handleDeleteCartItem = useCallback(
+    (productUUID: string) => {
+      const updatedCart = cartCookie.filter(
+        (cart) => cart.ProductUUID !== productUUID
+      );
+      setCartCookie(updatedCart);
+      const updatedCartString = JSON.stringify(updatedCart);
+      setCookie('cart', updatedCartString);
+    },
+    [cartCookie]
+  );
+
   const renderCartItem = useMemo(() => {
     return (
       <div>
         {cartCookie.length > 0 ? (
           cartCookie
             .slice(0, 4)
-            .map((cart) => <CartItem key={cart.ProductUUID} cart={cart} />)
+            .map((cart) => (
+              <CartItem
+                key={cart.ProductUUID}
+                cart={cart}
+                onChange={handleChangedCart}
+                onDelete={handleDeleteCartItem}
+              />
+            ))
         ) : (
           <div>No Cart found.</div>
         )}
       </div>
     );
-  }, [cartCookie]);
+  }, [cartCookie, handleChangedCart, handleDeleteCartItem]);
 
   return (
     <Layout>
