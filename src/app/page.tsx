@@ -1,5 +1,6 @@
+'use client';
+
 import * as React from 'react';
-import { useState } from 'react';
 
 import Carousel from '@/components/carousel/Carousel';
 import Footer from '@/components/layout/Footer';
@@ -7,7 +8,6 @@ import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import Product from '@/components/product/Product';
-import Seo from '@/components/Seo';
 
 import { useDidMount } from '@/utils/object';
 
@@ -26,7 +26,7 @@ import { ProductItem } from '@/types/product/product';
 // to customize the default configuration.
 
 export default function HomePage() {
-  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [products, setProducts] = React.useState<ProductItem[]>([]);
 
   const handleLoadProduct = React.useCallback(async () => {
     try {
@@ -49,8 +49,6 @@ export default function HomePage() {
 
   return (
     <Layout>
-      <Seo templateTitle='Beranda' />
-
       <main>
         <Header />
 

@@ -1,5 +1,7 @@
+'use client';
+
 import { getCookie, setCookie } from 'cookies-next';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import * as React from 'react';
 import { useForm } from 'react-hook-form';
 
 import Button from '@/components/buttons/Button';
@@ -7,7 +9,6 @@ import CartItem from '@/components/cart/CartItem';
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
-import Seo from '@/components/Seo';
 
 import { formatCurrency } from '@/utils/currency/CurrencyHelper';
 import { useDidMount } from '@/utils/object';
@@ -22,12 +23,12 @@ type CheckoutForm = {
 };
 
 export default function CheckoutPage() {
-  const [cartCookie, setCartCookie] = useState<CartCookie[]>([]);
+  const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
 
-  const [customerName, setCustomerName] = useState('');
-  const [customerEmail, setCustomerEmail] = useState('');
-  const [customerAddress, setCustomerAddress] = useState('');
-  const [customerPhoneNumber, SetCustomerPhoneNumber] = useState('');
+  const [customerName, setCustomerName] = React.useState('');
+  const [customerEmail, setCustomerEmail] = React.useState('');
+  const [customerAddress, setCustomerAddress] = React.useState('');
+  const [customerPhoneNumber, SetCustomerPhoneNumber] = React.useState('');
 
   const {
     register,
@@ -50,7 +51,7 @@ export default function CheckoutPage() {
     }
   );
 
-  const handleGetCurrentCart = useCallback(() => {
+  const handleGetCurrentCart = React.useCallback(() => {
     console.log('handleGetCurrentCart');
     const currentCart = getCookie('cart') as string;
 
@@ -64,18 +65,18 @@ export default function CheckoutPage() {
     handleGetCurrentCart();
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     console.log(cartCookie);
   }, [cartCookie]);
 
-  const handleGrandTotal = useCallback(() => {
+  const handleGrandTotal = React.useCallback(() => {
     return cartCookie.reduce((total, cart) => {
       const subtotal = cart.ProductPrice * cart.ProductQuantity;
       return total + subtotal;
     }, 0);
   }, [cartCookie]);
 
-  const handleChangedCart = useCallback(
+  const handleChangedCart = React.useCallback(
     (updatedCart: CartCookie) => {
       const updatedCartList = cartCookie.map((item) =>
         item.ProductUUID === updatedCart.ProductUUID ? updatedCart : item
@@ -87,7 +88,7 @@ export default function CheckoutPage() {
     [cartCookie]
   );
 
-  const handleDeleteCartItem = useCallback(
+  const handleDeleteCartItem = React.useCallback(
     (productUUID: string) => {
       const updatedCart = cartCookie.filter(
         (cart) => cart.ProductUUID !== productUUID
@@ -99,7 +100,7 @@ export default function CheckoutPage() {
     [cartCookie]
   );
 
-  const renderCartItem = useMemo(() => {
+  const renderCartItem = React.useMemo(() => {
     return (
       <div>
         {cartCookie.length > 0 ? (
@@ -122,8 +123,6 @@ export default function CheckoutPage() {
 
   return (
     <Layout>
-      <Seo templateTitle='Checkout' />
-
       <main>
         <Header />
 

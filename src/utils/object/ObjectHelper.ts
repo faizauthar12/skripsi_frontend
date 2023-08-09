@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import * as React from 'react';
 
 import { ObjectState } from '@/types/object';
 
@@ -13,7 +13,7 @@ export function getMultiformData(data: object) {
 }
 
 export function useDefaultState<S>(value: S, state?: ObjectState<S>) {
-  const defaultState = useState(value);
+  const defaultState = React.useState(value);
 
   return state || defaultState;
 }

@@ -41,5 +41,4 @@ robots.txt
 sitemap.xml
 sitemap-*.xml
 
-# lock files
-*lock*
+*lock

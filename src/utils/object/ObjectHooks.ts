@@ -1,24 +1,19 @@
-import {
-  DependencyList,
-  EffectCallback,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import * as React from 'react';
 
 import { ObjectMapRef } from '@/types/object';
 
-export function useDidMount(effect: EffectCallback) {
+export function useDidMount(effect: React.EffectCallback) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(effect, []);
+  React.useEffect(effect, []);
 }
 
-export function useDidUpdate(effect: EffectCallback, deps: DependencyList) {
-  const initialize = useRef(false);
+export function useDidUpdate(
+  effect: React.EffectCallback,
+  deps: React.DependencyList
+) {
+  const initialize = React.useRef(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (initialize.current) {
       effect();
     } else {
@@ -29,12 +24,15 @@ export function useDidUpdate(effect: EffectCallback, deps: DependencyList) {
 }
 
 export function useMapRef<T extends object>(data: T) {
-  const [lastUpdate, setLastUpdate] = useState(new Date());
-  const refData = useRef(data);
+  const [lastUpdate, setLastUpdate] = React.useState(new Date());
+  const refData = React.useRef(data);
 
-  const handleUpdateData = useCallback(() => setLastUpdate(new Date()), []);
+  const handleUpdateData = React.useCallback(
+    () => setLastUpdate(new Date()),
+    []
+  );
 
-  const handleSetData = useCallback(
+  const handleSetData = React.useCallback(
     (map: Partial<T>, update = false) => {
       for (const [key, value] of Object.entries(map)) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -49,7 +47,7 @@ export function useMapRef<T extends object>(data: T) {
     [handleUpdateData]
   );
 
-  return useMemo<ObjectMapRef<T>>(
+  return React.useMemo<ObjectMapRef<T>>(
     () => ({
       updateMap: handleUpdateData,
       setMapValue: handleSetData,
@@ -70,11 +68,11 @@ export function useDebounce(
     onDebounce(dif: number): void;
     disabled?: boolean;
   },
-  deps: DependencyList
+  deps: React.DependencyList
 ) {
-  const timestamp = useRef(new Date().getTime());
+  const timestamp = React.useRef(new Date().getTime());
 
-  const handler = useCallback(() => {
+  const handler = React.useCallback(() => {
     if (!disabled) {
       timestamp.current = new Date().getTime();
 
@@ -93,6 +91,6 @@ export function useDebounce(
     return undefined;
   }, [disabled, timeout, onDebounce]);
 
-  useEffect(handler, [handler]);
+  React.useEffect(handler, [handler]);
   useDidUpdate(handler, deps);
 }

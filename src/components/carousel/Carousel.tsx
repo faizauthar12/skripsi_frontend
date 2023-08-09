@@ -11,7 +11,7 @@ type CarouselProps = {
 export default function Carousel({ images }: CarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const size = useWindowSize();
-  const src = '/images/large-og.png';
+  const src = '/images/og.jpg';
 
   return (
     <div>

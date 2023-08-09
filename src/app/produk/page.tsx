@@ -1,21 +1,22 @@
-import { useCallback, useState } from 'react';
+'use client';
+
+import * as React from 'react';
 
 import Footer from '@/components/layout/Footer';
 import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import UnstyledLink from '@/components/links/UnstyledLink';
 import Product from '@/components/product/Product';
-import Seo from '@/components/Seo';
 
 import { useDidMount } from '@/utils/object';
 
 import { ProductItem } from '@/types/product/product';
 
 export default function ProductPage() {
-  const [products, setProducts] = useState<ProductItem[]>([]);
-  const [pageTitle, setPageTitle] = useState('Semua Produk');
+  const [products, setProducts] = React.useState<ProductItem[]>([]);
+  const [pageTitle, setPageTitle] = React.useState('Semua Produk');
 
-  const handleLoadProduct = useCallback(async () => {
+  const handleLoadProduct = React.useCallback(async () => {
     try {
       const response = await fetch('http://localhost:8080/product/');
 
@@ -30,22 +31,25 @@ export default function ProductPage() {
     }
   }, []);
 
-  const handleLoadProductWithFilter = useCallback(async (filter: string) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/product?category=${filter}`
-      );
+  const handleLoadProductWithFilter = React.useCallback(
+    async (filter: string) => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/product?category=${filter}`
+        );
 
-      if (response.status === 200) {
-        const data = await response.json();
-        setProducts(data.data.products);
-      } else {
+        if (response.status === 200) {
+          const data = await response.json();
+          setProducts(data.data.products);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
         setProducts([]);
       }
-    } catch (error) {
-      setProducts([]);
-    }
-  }, []);
+    },
+    []
+  );
 
   useDidMount(() => {
     handleLoadProduct();
@@ -53,8 +57,6 @@ export default function ProductPage() {
 
   return (
     <Layout>
-      <Seo templateTitle='Produk' />
-
       <main>
         <Header />
 

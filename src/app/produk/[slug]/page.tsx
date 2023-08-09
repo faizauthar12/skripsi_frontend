@@ -1,6 +1,8 @@
+'use client';
+
 import { getCookie, setCookie } from 'cookies-next';
-import { useRouter } from 'next/router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import * as React from 'react';
 
 import Button from '@/components/buttons/Button';
 import Footer from '@/components/layout/Footer';
@@ -14,19 +16,21 @@ import { CartCookie } from '@/types/cart/CartCookie';
 import { ProductItem } from '@/types/product/product';
 import { SizeChartCategory } from '@/types/product/SizeChart';
 
-export default function ProductPage() {
+export default function ProductPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
 
-  const { slug } = router.query;
+  const slug = params.slug;
 
-  const [product, setProduct] = useState<ProductItem>();
-  const [sizeChartData, setSizeChartData] = useState<SizeChartCategory[]>([]);
+  const [product, setProduct] = React.useState<ProductItem>();
+  const [sizeChartData, setSizeChartData] = React.useState<SizeChartCategory[]>(
+    []
+  );
   const [selectedSizeChart, setSelectedSizeChart] =
-    useState<SizeChartCategory>();
+    React.useState<SizeChartCategory>();
 
-  const [cartCookie, setCartCookie] = useState<CartCookie[]>([]);
+  const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
 
-  const handleGetCurrentCart = useCallback(() => {
+  const handleGetCurrentCart = React.useCallback(() => {
     console.log('handleGetCurrentCart');
     const currentCart = getCookie('cart') as string;
 
@@ -48,7 +52,7 @@ export default function ProductPage() {
     handleGetCurrentCart();
   });
 
-  const handleLoadProduct = useCallback(async () => {
+  const handleLoadProduct = React.useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:8080/product/${slug}`);
 
@@ -61,7 +65,7 @@ export default function ProductPage() {
     }
   }, [slug]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (slug) {
       handleLoadProduct();
 
@@ -80,7 +84,7 @@ export default function ProductPage() {
     }
   }, [slug, handleLoadProduct, cartCookie, sizeChartData]);
 
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = React.useState(0);
 
   const handleDecrement = () => {
     if (quantity > 0) {
@@ -92,7 +96,7 @@ export default function ProductPage() {
     setQuantity(quantity + 1);
   };
 
-  const handleSelectSizeChart = useCallback(
+  const handleSelectSizeChart = React.useCallback(
     (sizeType: SizeChartCategory) => {
       setSelectedSizeChart(
         selectedSizeChart === sizeType ? undefined : sizeType
@@ -101,7 +105,7 @@ export default function ProductPage() {
     [selectedSizeChart]
   );
 
-  const renderSizeChart = useMemo(
+  const renderSizeChart = React.useMemo(
     () =>
       sizeChartData.map((size) => (
         <Button
@@ -115,7 +119,7 @@ export default function ProductPage() {
     [handleSelectSizeChart, selectedSizeChart, sizeChartData]
   );
 
-  const handleChangedCart = useCallback(() => {
+  const handleChangedCart = React.useCallback(() => {
     if (product && selectedSizeChart && quantity > 0) {
       console.log('handleChangedCart');
       const updatedCart = cartCookie.map((item) => {
@@ -133,7 +137,7 @@ export default function ProductPage() {
     }
   }, [product, quantity, selectedSizeChart, cartCookie]);
 
-  const handleSaveCart = useCallback(() => {
+  const handleSaveCart = React.useCallback(() => {
     console.log('handleSaveCart');
     if (product && selectedSizeChart && quantity > 0) {
       const updatedCartCookie = cartCookie.filter(
