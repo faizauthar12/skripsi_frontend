@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { MdOutlineDeleteForever } from 'react-icons/md';
 
@@ -7,9 +8,11 @@ import NextImage from '@/components/NextImage';
 type SafeNumber = number | `${number}`;
 
 type CartItemProps = {
+  prodUUID: string;
+  prodName?: string;
   descProduct?: string;
-  quantity?: string;
-  subTotal?: string;
+  prodQuantity?: number;
+  subTotal?: number;
   src?: string;
   alt?: string;
   width?: SafeNumber;
@@ -17,15 +20,19 @@ type CartItemProps = {
 };
 
 export default function CartItem({
+  prodUUID,
+  prodName,
   descProduct,
-  // quantity,
+  prodQuantity,
   subTotal,
   src,
   alt,
   width,
   height,
 }: CartItemProps) {
-  const [quantity, setQuantity] = useState(0);
+  const router = useRouter();
+
+  const [quantity, setQuantity] = useState(prodQuantity ? prodQuantity : 0);
 
   const handleDecrement = () => {
     if (quantity > 0) {
@@ -41,6 +48,9 @@ export default function CartItem({
     <div>
       <div className='mb-5 mt-5 grid grid-cols-4 gap-5'>
         <NextImage
+          onClick={() => {
+            router.push(`/produk/${prodUUID}`);
+          }}
           useSkeleton
           className='w-240 md:w-'
           src={src ? src : '/images/product.png'}
@@ -51,6 +61,8 @@ export default function CartItem({
 
         <div className='col-span-3'>
           <div className='flex flex-col gap-3'>
+            <div>{prodName ? prodName : 'Nama Produk'}</div>
+
             <div>{descProduct ? descProduct : 'Deskripsi Produk'}</div>
 
             <div className='flex flex-row justify-between'>
@@ -83,7 +95,8 @@ export default function CartItem({
               </div>
             </div>
             <div className='flex flex-row justify-between'>
-              <div>{subTotal ? subTotal : 'Subtotal'}</div>
+              <div>Subtotal : </div>
+              <div>{subTotal ? subTotal : 0}</div>
               <Button variant='light'>
                 <MdOutlineDeleteForever />
               </Button>

@@ -1,6 +1,7 @@
 export interface CartCookie {
   ProductUUID: string;
   ProductName: string;
-  Size: string;
-  Quantity: number;
+  ProductSize: string;
+  ProductQuantity: number;
+  ProductPrice: number;
 }

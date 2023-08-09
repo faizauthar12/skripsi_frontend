@@ -1,3 +1,6 @@
+import { getCookie } from 'cookies-next';
+import { useCallback, useMemo, useState } from 'react';
+
 import Button from '@/components/buttons/Button';
 import CartItem from '@/components/cart/CartItem';
 import Footer from '@/components/layout/Footer';
@@ -6,7 +9,49 @@ import Layout from '@/components/layout/Layout';
 import PrimaryLink from '@/components/links/PrimaryLink';
 import Seo from '@/components/Seo';
 
+import { useDidMount } from '@/utils/object';
+
+import { CartCookie } from '@/types/cart/CartCookie';
+
 export default function CartPage() {
+  const [cartCookie, setCartCookie] = useState<CartCookie[]>([]);
+
+  const handleGetCurrentCart = useCallback(() => {
+    console.log('handleGetCurrentCart');
+    const currentCart = getCookie('cart') as string;
+
+    if (currentCart) {
+      const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
+      setCartCookie(currentCartParsed);
+    }
+  }, []);
+
+  useDidMount(() => {
+    handleGetCurrentCart();
+  });
+
+  const renderCartItem = useMemo(() => {
+    return (
+      <div>
+        {cartCookie.length > 0 ? (
+          cartCookie
+            .slice(0, 4)
+            .map((cart) => (
+              <CartItem
+                key={cart.ProductUUID}
+                prodUUID={cart.ProductUUID}
+                prodQuantity={cart.ProductQuantity}
+                prodName={cart.ProductName}
+                subTotal={cart.ProductPrice * cart.ProductQuantity}
+              />
+            ))
+        ) : (
+          <div>No Cart found.</div>
+        )}
+      </div>
+    );
+  }, [cartCookie]);
+
   return (
     <Layout>
       <Seo templateTitle='Keranjang' />
@@ -22,24 +67,21 @@ export default function CartPage() {
           <div className='sd: mt-5 grid grid-cols-1 gap-5 md:grid-cols-3 '>
             <div className='col-span-2 divide-y divide-solid'>
               <div className='flex justify-between'>
-                <div>Terdapat 1 Barang</div>
+                {cartCookie.length > 0 ? (
+                  `Terdapat ${cartCookie.length} Barang`
+                ) : (
+                  <div>Tidak ada barang</div>
+                )}
                 <PrimaryLink href='/produk'> + Belanja Lagi</PrimaryLink>
               </div>
 
               <div className='mt-5 flex flex-col divide-y divide-solid'>
-                <CartItem />
-                <CartItem />
-                <CartItem />
+                {renderCartItem}
               </div>
             </div>
 
             <div className='sd: sticky bottom-0 col-span-2 bg-white py-5 md:col-span-1'>
               <div className='flex flex-col gap-3 '>
-                <div className='flex flex-row justify-between'>
-                  <div>Subtotal</div>
-                  <div>IDR 260,000</div>
-                </div>
-
                 <div className='flex flex-row justify-between'>
                   <div>Total Pembayaran</div>
                   <div>IDR 260,000</div>

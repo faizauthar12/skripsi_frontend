@@ -70,9 +70,11 @@ export default function ProductPage() {
       );
 
       if (existingCartItem) {
-        setQuantity(existingCartItem.Quantity);
+        setQuantity(existingCartItem.ProductQuantity);
         setSelectedSizeChart(
-          sizeChartData.find((size) => size.size === existingCartItem.Size)
+          sizeChartData.find(
+            (size) => size.size === existingCartItem.ProductSize
+          )
         );
       }
     }
@@ -120,8 +122,8 @@ export default function ProductPage() {
         if (item.ProductUUID === product.UUID) {
           return {
             ...item,
-            Quantity: quantity,
-            Size: selectedSizeChart.size,
+            ProductQuantity: quantity,
+            ProductSize: selectedSizeChart.size,
           };
         }
         return item;
@@ -141,8 +143,9 @@ export default function ProductPage() {
       updatedCartCookie.push({
         ProductUUID: product.UUID,
         ProductName: product.ProductName,
-        Quantity: quantity,
-        Size: selectedSizeChart.size,
+        ProductQuantity: quantity,
+        ProductSize: selectedSizeChart.size,
+        ProductPrice: product.ProductPrice,
       });
 
       setCartCookie(updatedCartCookie);
