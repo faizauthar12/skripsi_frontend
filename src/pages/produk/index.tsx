@@ -13,6 +13,7 @@ import { ProductItem } from '@/types/product/product';
 
 export default function ProductPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
+  const [pageTitle, setPageTitle] = useState('Semua Produk');
 
   const handleLoadProduct = useCallback(async () => {
     try {
@@ -63,7 +64,10 @@ export default function ProductPage() {
               <UnstyledLink
                 href='/produk'
                 className='font-bold hover:text-gray-600'
-                onClick={handleLoadProduct}
+                onClick={() => {
+                  handleLoadProduct();
+                  setPageTitle('Semua Produk');
+                }}
               >
                 Kategori
               </UnstyledLink>
@@ -72,7 +76,19 @@ export default function ProductPage() {
                 href='/produk'
                 className=' hover:text-gray-600'
                 onClick={() => {
+                  handleLoadProduct();
+                  setPageTitle('Semua Produk');
+                }}
+              >
+                Semua
+              </UnstyledLink>
+
+              <UnstyledLink
+                href='/produk'
+                className=' hover:text-gray-600'
+                onClick={() => {
                   handleLoadProductWithFilter('pria');
+                  setPageTitle('Pria');
                   console.log('Filterd: Pria');
                 }}
               >
@@ -84,6 +100,7 @@ export default function ProductPage() {
                 className=' hover:text-gray-600'
                 onClick={() => {
                   handleLoadProductWithFilter('Wanita');
+                  setPageTitle('Wanita');
                   console.log('Filterd: Wanita');
                 }}
               >
@@ -92,7 +109,7 @@ export default function ProductPage() {
             </div>
 
             <div className='flex flex-col'>
-              <div className='font-bold'>Semua Produk</div>
+              <div className='font-bold'>{pageTitle}</div>
               <div className='mt-[27px] grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3'>
                 {products.length > 0 ? (
                   products
