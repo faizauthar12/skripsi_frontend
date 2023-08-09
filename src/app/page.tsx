@@ -30,7 +30,7 @@ export default function HomePage() {
 
   const handleLoadProduct = React.useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:8080/product/');
+      const response = await fetch(`${process.env.BASE_URL}/product/`);
 
       if (response.status === 200) {
         const data = await response.json();
@@ -45,6 +45,10 @@ export default function HomePage() {
 
   useDidMount(() => {
     handleLoadProduct();
+  });
+
+  React.useEffect(() => {
+    console.log(process.env.BASE_URL);
   });
 
   return (

@@ -54,7 +54,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   const handleLoadProduct = React.useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:8080/product/${slug}`);
+      const response = await fetch(`${process.env.BASE_URL}/product/${slug}`);
 
       if (response.status === 200) {
         const data = await response.json();
