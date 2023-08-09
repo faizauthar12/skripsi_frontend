@@ -17,8 +17,8 @@ type CartItemProps = {
   alt?: string;
   width?: SafeNumber;
   height?: SafeNumber;
-  onChange: (cart: CartCookie) => void;
-  onDelete: (productUUID: string) => void;
+  onChange?: (cart: CartCookie) => void;
+  onDelete?: (productUUID: string) => void;
 };
 
 export default function CartItem({
@@ -42,18 +42,18 @@ export default function CartItem({
     if (quantity > 0) {
       setQuantity(quantity - 1);
       const updatedCart = { ...cart, ProductQuantity: quantity - 1 };
-      onChange(updatedCart);
+      onChange && onChange(updatedCart);
     }
   };
 
   const handleIncrement = () => {
     setQuantity(quantity + 1);
     const updatedCart = { ...cart, ProductQuantity: quantity + 1 };
-    onChange(updatedCart);
+    onChange && onChange(updatedCart);
   };
 
   const handleDelete = () => {
-    onDelete(cart.ProductUUID);
+    onDelete && onDelete(cart.ProductUUID);
   };
 
   return (

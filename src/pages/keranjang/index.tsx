@@ -1,4 +1,5 @@
 import { getCookie, setCookie } from 'cookies-next';
+import { useRouter } from 'next/router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Button from '@/components/buttons/Button';
@@ -15,7 +16,10 @@ import { useDidMount } from '@/utils/object';
 import { CartCookie } from '@/types/cart/CartCookie';
 
 export default function CartPage() {
+  const router = useRouter();
+
   const [cartCookie, setCartCookie] = useState<CartCookie[]>([]);
+  const [checkoutButton, setCheckoutButton] = useState(false);
 
   const handleGetCurrentCart = useCallback(() => {
     console.log('handleGetCurrentCart');
@@ -24,6 +28,7 @@ export default function CartPage() {
     if (currentCart) {
       const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
       setCartCookie(currentCartParsed);
+      setCheckoutButton(true);
     }
   }, []);
 
@@ -40,6 +45,11 @@ export default function CartPage() {
 
   useEffect(() => {
     console.log(cartCookie);
+    if (cartCookie.length > 0) {
+      setCheckoutButton(true);
+    } else {
+      setCheckoutButton(false);
+    }
   }, [cartCookie]);
 
   const handleChangedCart = useCallback(
@@ -81,7 +91,7 @@ export default function CartPage() {
               />
             ))
         ) : (
-          <div>No Cart found.</div>
+          <div></div>
         )}
       </div>
     );
@@ -130,8 +140,18 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                <Button variant='dark' textCenter>
-                  Beli
+                <Button
+                  variant={checkoutButton ? 'primary' : 'light'}
+                  textCenter
+                  onClick={() => {
+                    if (checkoutButton === true) {
+                      router.push('/checkout');
+                    } else {
+                      router.push('/produk');
+                    }
+                  }}
+                >
+                  {checkoutButton ? 'Beli' : 'Pilih Produk'}
                 </Button>
               </div>
             </div>

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { getCookie, setCookie } from 'cookies-next';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import Button from '@/components/buttons/Button';
@@ -8,6 +9,11 @@ import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
 
+import { formatCurrency } from '@/utils/currency/CurrencyHelper';
+import { useDidMount } from '@/utils/object';
+
+import { CartCookie } from '@/types/cart/CartCookie';
+
 type CheckoutForm = {
   customerName: string;
   customerEmail: string;
@@ -16,6 +22,8 @@ type CheckoutForm = {
 };
 
 export default function CheckoutPage() {
+  const [cartCookie, setCartCookie] = useState<CartCookie[]>([]);
+
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [customerAddress, setCustomerAddress] = useState('');
@@ -41,6 +49,76 @@ export default function CheckoutPage() {
       SetCustomerPhoneNumber(customerPhoneNumber);
     }
   );
+
+  const handleGetCurrentCart = useCallback(() => {
+    console.log('handleGetCurrentCart');
+    const currentCart = getCookie('cart') as string;
+
+    if (currentCart) {
+      const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
+      setCartCookie(currentCartParsed);
+    }
+  }, []);
+
+  useDidMount(() => {
+    handleGetCurrentCart();
+  });
+
+  useEffect(() => {
+    console.log(cartCookie);
+  }, [cartCookie]);
+
+  const handleGrandTotal = useCallback(() => {
+    return cartCookie.reduce((total, cart) => {
+      const subtotal = cart.ProductPrice * cart.ProductQuantity;
+      return total + subtotal;
+    }, 0);
+  }, [cartCookie]);
+
+  const handleChangedCart = useCallback(
+    (updatedCart: CartCookie) => {
+      const updatedCartList = cartCookie.map((item) =>
+        item.ProductUUID === updatedCart.ProductUUID ? updatedCart : item
+      );
+      setCartCookie(updatedCartList);
+      const updatedCartString = JSON.stringify(updatedCartList);
+      setCookie('cart', updatedCartString);
+    },
+    [cartCookie]
+  );
+
+  const handleDeleteCartItem = useCallback(
+    (productUUID: string) => {
+      const updatedCart = cartCookie.filter(
+        (cart) => cart.ProductUUID !== productUUID
+      );
+      setCartCookie(updatedCart);
+      const updatedCartString = JSON.stringify(updatedCart);
+      setCookie('cart', updatedCartString);
+    },
+    [cartCookie]
+  );
+
+  const renderCartItem = useMemo(() => {
+    return (
+      <div>
+        {cartCookie.length > 0 ? (
+          cartCookie
+            .slice(0, 4)
+            .map((cart) => (
+              <CartItem
+                key={cart.ProductUUID}
+                cart={cart}
+                onChange={handleChangedCart}
+                onDelete={handleDeleteCartItem}
+              />
+            ))
+        ) : (
+          <div>No Cart found.</div>
+        )}
+      </div>
+    );
+  }, [cartCookie, handleChangedCart, handleDeleteCartItem]);
 
   return (
     <Layout>
@@ -90,21 +168,25 @@ export default function CheckoutPage() {
 
             {/* Right  */}
             <div className='col-span-2 bg-white py-5 md:col-span-1'>
+              {renderCartItem}
+              {/* <CartItem />
               <CartItem />
-              <CartItem />
-              <CartItem />
+              <CartItem /> */}
               <div className='sd: sticky bottom-0 flex flex-col gap-3 bg-white '>
                 <div className='flex flex-row justify-between'>
-                  <div>Subtotal</div>
-                  <div>IDR 260,000</div>
-                </div>
-
-                <div className='flex flex-row justify-between'>
                   <div>Total Pembayaran</div>
-                  <div>IDR 260,000</div>
+                  <div>
+                    {formatCurrency(
+                      handleGrandTotal(),
+                      undefined,
+                      undefined,
+                      undefined,
+                      2
+                    )}
+                  </div>
                 </div>
 
-                <Button variant='dark' textCenter onClick={onSubmit}>
+                <Button variant='primary' textCenter onClick={onSubmit}>
                   Checkout
                 </Button>
               </div>
