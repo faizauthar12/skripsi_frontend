@@ -5,14 +5,14 @@ import { MdOutlineDeleteForever } from 'react-icons/md';
 import Button from '@/components/buttons/Button';
 import NextImage from '@/components/NextImage';
 
+import { formatCurrency } from '@/utils/currency/CurrencyHelper';
+
+import { CartCookie } from '@/types/cart/CartCookie';
+
 type SafeNumber = number | `${number}`;
 
 type CartItemProps = {
-  prodUUID: string;
-  prodName?: string;
-  descProduct?: string;
-  prodQuantity?: number;
-  subTotal?: number;
+  cart: CartCookie;
   src?: string;
   alt?: string;
   width?: SafeNumber;
@@ -20,19 +20,19 @@ type CartItemProps = {
 };
 
 export default function CartItem({
-  prodUUID,
-  prodName,
-  descProduct,
-  prodQuantity,
-  subTotal,
+  cart,
   src,
   alt,
   width,
   height,
 }: CartItemProps) {
   const router = useRouter();
+  let subTotal = 0;
+  subTotal = cart.ProductPrice * cart.ProductQuantity;
 
-  const [quantity, setQuantity] = useState(prodQuantity ? prodQuantity : 0);
+  const [quantity, setQuantity] = useState(
+    cart.ProductQuantity ? cart.ProductQuantity : 0
+  );
 
   const handleDecrement = () => {
     if (quantity > 0) {
@@ -49,7 +49,7 @@ export default function CartItem({
       <div className='mb-5 mt-5 grid grid-cols-4 gap-5'>
         <NextImage
           onClick={() => {
-            router.push(`/produk/${prodUUID}`);
+            router.push(`/produk/${cart.ProductUUID}`);
           }}
           useSkeleton
           className='w-240 md:w-'
@@ -61,9 +61,11 @@ export default function CartItem({
 
         <div className='col-span-3'>
           <div className='flex flex-col gap-3'>
-            <div>{prodName ? prodName : 'Nama Produk'}</div>
+            <div className='font-medium'>
+              {cart.ProductName ? cart.ProductName : 'Nama Produk'}
+            </div>
 
-            <div>{descProduct ? descProduct : 'Deskripsi Produk'}</div>
+            {/* <div>{descProduct ? descProduct : 'Deskripsi Produk'}</div> */}
 
             <div className='flex flex-row justify-between'>
               <div>Quantity</div>
@@ -95,8 +97,25 @@ export default function CartItem({
               </div>
             </div>
             <div className='flex flex-row justify-between'>
-              <div>Subtotal : </div>
-              <div>{subTotal ? subTotal : 0}</div>
+              <div>Harga Satuan: </div>
+              <div>
+                {formatCurrency(
+                  cart.ProductPrice,
+                  undefined,
+                  undefined,
+                  undefined,
+                  2
+                )}
+              </div>
+            </div>
+            <div className='flex flex-row justify-between'>
+              <div>Harga Total : </div>
+              <div>
+                {' '}
+                {formatCurrency(subTotal, undefined, undefined, undefined, 2)}
+              </div>
+            </div>
+            <div className='flex flex-row justify-end'>
               <Button variant='light'>
                 <MdOutlineDeleteForever />
               </Button>

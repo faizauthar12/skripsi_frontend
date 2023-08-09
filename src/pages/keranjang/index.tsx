@@ -9,6 +9,7 @@ import Layout from '@/components/layout/Layout';
 import PrimaryLink from '@/components/links/PrimaryLink';
 import Seo from '@/components/Seo';
 
+import { formatCurrency } from '@/utils/currency/CurrencyHelper';
 import { useDidMount } from '@/utils/object';
 
 import { CartCookie } from '@/types/cart/CartCookie';
@@ -26,6 +27,13 @@ export default function CartPage() {
     }
   }, []);
 
+  const handleGrandTotal = useCallback(() => {
+    return cartCookie.reduce((total, cart) => {
+      const subtotal = cart.ProductPrice * cart.ProductQuantity;
+      return total + subtotal;
+    }, 0);
+  }, [cartCookie]);
+
   useDidMount(() => {
     handleGetCurrentCart();
   });
@@ -36,15 +44,7 @@ export default function CartPage() {
         {cartCookie.length > 0 ? (
           cartCookie
             .slice(0, 4)
-            .map((cart) => (
-              <CartItem
-                key={cart.ProductUUID}
-                prodUUID={cart.ProductUUID}
-                prodQuantity={cart.ProductQuantity}
-                prodName={cart.ProductName}
-                subTotal={cart.ProductPrice * cart.ProductQuantity}
-              />
-            ))
+            .map((cart) => <CartItem key={cart.ProductUUID} cart={cart} />)
         ) : (
           <div>No Cart found.</div>
         )}
@@ -84,7 +84,15 @@ export default function CartPage() {
               <div className='flex flex-col gap-3 '>
                 <div className='flex flex-row justify-between'>
                   <div>Total Pembayaran</div>
-                  <div>IDR 260,000</div>
+                  <div>
+                    {formatCurrency(
+                      handleGrandTotal(),
+                      undefined,
+                      undefined,
+                      undefined,
+                      2
+                    )}
+                  </div>
                 </div>
 
                 <Button variant='dark' textCenter>
