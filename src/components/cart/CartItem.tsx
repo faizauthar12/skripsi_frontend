@@ -39,7 +39,7 @@ export default function CartItem({
   );
 
   const handleDecrement = () => {
-    if (quantity > 0) {
+    if (quantity > 1) {
       setQuantity(quantity - 1);
       const updatedCart = { ...cart, ProductQuantity: quantity - 1 };
       onChange && onChange(updatedCart);
