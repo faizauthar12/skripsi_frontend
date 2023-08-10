@@ -58,7 +58,8 @@ export default function ProductPage() {
       <main>
         <div className='layout relative flex min-h-screen flex-col'>
           <div className='flex flex-row'>
-            <div className='me-40 flex flex-col space-y-5'>
+            {/* Left panel */}
+            <div className='me-10	flex min-w-fit flex-col space-y-5 md:me-20 lg:me-40'>
               <UnstyledLink
                 href='/produk'
                 className='font-bold hover:text-gray-600'
