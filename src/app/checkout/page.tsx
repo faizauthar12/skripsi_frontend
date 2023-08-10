@@ -42,7 +42,7 @@ export default function CheckoutPage() {
     handleGetCurrentCart();
   });
 
-  const handleEnableButton = () => {
+  const handleEnableButton = React.useCallback(() => {
     if (
       customerName &&
       customerAddress &&
@@ -51,7 +51,7 @@ export default function CheckoutPage() {
     ) {
       return true;
     } else return false;
-  };
+  }, [customerAddress, customerEmail, customerName, customerPhoneNumber]);
 
   const calculateGrandTotal = React.useCallback(() => {
     return cartCookie.reduce((total, cart) => {
@@ -188,7 +188,7 @@ export default function CheckoutPage() {
                   variant={handleEnableButton() ? 'primary' : 'light'}
                   textCenter
                   onClick={handleSubmit}
-                  disabled={!handleEnableButton()}
+                  disabled={!handleEnableButton}
                 >
                   Checkout
                 </Button>
