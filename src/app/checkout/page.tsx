@@ -22,35 +22,14 @@ type CheckoutForm = {
 
 export default function CheckoutPage() {
   const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
+  const [cartGrandTotal, setCartGrandTotal] = React.useState(0);
 
-  const [customerName, setCustomerName] = React.useState('');
-  const [customerEmail, setCustomerEmail] = React.useState('');
-  const [customerAddress, setCustomerAddress] = React.useState('');
-  const [customerPhoneNumber, SetCustomerPhoneNumber] = React.useState('');
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<CheckoutForm>();
-
-  const onSubmit = handleSubmit(
-    ({ customerName, customerEmail, customerAddress, customerPhoneNumber }) => {
-      console.log(
-        customerName,
-        customerEmail,
-        customerAddress,
-        customerPhoneNumber
-      );
-      setCustomerName(customerName);
-      setCustomerEmail(customerEmail);
-      setCustomerAddress(customerAddress);
-      SetCustomerPhoneNumber(customerPhoneNumber);
-    }
-  );
+  const form = useForm<CheckoutForm>();
+  const { watch, register } = form;
+  const { customerName, customerAddress, customerEmail, customerPhoneNumber } =
+    watch();
 
   const handleGetCurrentCart = React.useCallback(() => {
-    console.log('handleGetCurrentCart');
     const currentCart = getCookie('cart') as string;
 
     if (currentCart) {
@@ -63,9 +42,16 @@ export default function CheckoutPage() {
     handleGetCurrentCart();
   });
 
-  React.useEffect(() => {
-    console.log(cartCookie);
-  }, [cartCookie]);
+  const handleEnableButton = () => {
+    if (
+      customerName &&
+      customerAddress &&
+      customerEmail &&
+      customerPhoneNumber
+    ) {
+      return true;
+    } else return false;
+  };
 
   const handleGrandTotal = React.useCallback(() => {
     return cartCookie.reduce((total, cart) => {
@@ -97,6 +83,27 @@ export default function CheckoutPage() {
     },
     [cartCookie]
   );
+
+  React.useEffect(() => {
+    const grandTotal = handleGrandTotal();
+    setCartGrandTotal(grandTotal);
+  }, [handleGrandTotal]);
+
+  const handleSubmit = React.useCallback(() => {
+    console.log(`
+      customer Name: ${customerName}\n
+      customer Email: ${customerEmail}\n
+      customer Phone Number: ${customerPhoneNumber}\n
+      customer Address: ${customerAddress}\n
+      cart grand total: ${cartGrandTotal}
+    `);
+  }, [
+    cartGrandTotal,
+    customerAddress,
+    customerEmail,
+    customerName,
+    customerPhoneNumber,
+  ]);
 
   const renderCartItem = React.useMemo(() => {
     return (
@@ -132,7 +139,7 @@ export default function CheckoutPage() {
             <div className='col-span-2 divide-y divide-solid'>
               {/* Input */}
               <div className='mt-5 flex flex-col'>
-                <form onSubmit={onSubmit} className='flex-col'>
+                <form className='flex-col'>
                   <div>Nama</div>
                   <input
                     className='mb-3 w-full rounded border-2 border-gray-400'
@@ -164,15 +171,12 @@ export default function CheckoutPage() {
             {/* Right  */}
             <div className='col-span-2 bg-white py-5 md:col-span-1'>
               {renderCartItem}
-              {/* <CartItem />
-              <CartItem />
-              <CartItem /> */}
               <div className='sd: sticky bottom-0 flex flex-col gap-3 bg-white '>
                 <div className='flex flex-row justify-between'>
                   <div>Total Pembayaran</div>
                   <div>
                     {formatCurrency(
-                      handleGrandTotal(),
+                      cartGrandTotal,
                       undefined,
                       undefined,
                       undefined,
@@ -181,7 +185,12 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <Button variant='primary' textCenter onClick={onSubmit}>
+                <Button
+                  variant={handleEnableButton() ? 'primary' : 'light'}
+                  textCenter
+                  onClick={handleSubmit}
+                  disabled={!handleEnableButton()}
+                >
                   Checkout
                 </Button>
               </div>
