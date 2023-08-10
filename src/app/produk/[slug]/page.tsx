@@ -30,7 +30,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [addButton, setAddButton] = React.useState(false);
 
   const handleGetCurrentCart = React.useCallback(() => {
-    console.log('handleGetCurrentCart');
+    if (process.env.NODE_ENV == 'development') {
+      console.log('handleGetCurrentCart');
+    }
     const currentCart = getCookie('cart') as string;
 
     if (currentCart) {
@@ -120,7 +122,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   const handleChangedCart = React.useCallback(() => {
     if (product && selectedSizeChart && quantity > 0) {
-      console.log('handleChangedCart');
+      if (process.env.NODE_ENV == 'development') {
+        console.log('handleChangedCart');
+      }
       const updatedCart = cartCookie.map((item) => {
         if (item.ProductUUID === product.UUID) {
           return {
@@ -142,7 +146,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   }, [product, quantity, selectedSizeChart, cartCookie]);
 
   const handleSaveCart = React.useCallback(() => {
-    console.log('handleSaveCart');
+    if (process.env.NODE_ENV == 'development') {
+      console.log('handleSaveCart');
+    }
     if (product && selectedSizeChart && quantity > 0) {
       const updatedCartCookie = cartCookie.filter(
         (item) => item.ProductUUID !== product.UUID
@@ -169,7 +175,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   }, [selectedSizeChart, quantity]);
 
   useDidUpdate(() => {
-    console.log(cartCookie);
+    if (process.env.NODE_ENV == 'development') {
+      console.log(cartCookie);
+    }
   }, [cartCookie]);
 
   return (

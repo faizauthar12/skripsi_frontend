@@ -88,7 +88,9 @@ export default function ProductPage() {
                 onClick={() => {
                   handleLoadProductWithFilter('pria');
                   setPageTitle('Pria');
-                  console.log('Filterd: Pria');
+                  if (process.env.NODE_ENV == 'development') {
+                    console.log('Filterd: Pria');
+                  }
                 }}
               >
                 Pria
@@ -100,7 +102,9 @@ export default function ProductPage() {
                 onClick={() => {
                   handleLoadProductWithFilter('Wanita');
                   setPageTitle('Wanita');
-                  console.log('Filterd: Wanita');
+                  if (process.env.NODE_ENV == 'development') {
+                    console.log('Filterd: Wanita');
+                  }
                 }}
               >
                 Wanita

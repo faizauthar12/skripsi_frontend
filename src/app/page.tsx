@@ -46,7 +46,9 @@ export default function HomePage() {
   });
 
   React.useEffect(() => {
-    console.log(process.env.BASE_URL);
+    if (process.env.NODE_ENV == 'development') {
+      console.log(process.env.BASE_URL);
+    }
   });
 
   return (

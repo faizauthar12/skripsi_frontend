@@ -43,7 +43,9 @@ export default function CartPage() {
   });
 
   React.useEffect(() => {
-    console.log(cartCookie);
+    if (process.env.NODE_ENV == 'development') {
+      console.log(cartCookie);
+    }
     if (cartCookie.length > 0) {
       setCheckoutButton(true);
     } else {

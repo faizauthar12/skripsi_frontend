@@ -105,7 +105,9 @@ export default function CheckoutPage() {
 
     if (responseCustomer.status === 200) {
       const data = await responseCustomer.json();
-      console.log('Customer created:', data);
+      if (process.env.NODE_ENV == 'development') {
+        console.log('Customer created:', data);
+      }
       setCustomerUUID(data.data.customer.UUID);
     }
   }, [customerAddress, customerEmail, customerName, customerPhoneNumber]);
