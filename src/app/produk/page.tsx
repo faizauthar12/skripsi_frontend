@@ -119,7 +119,7 @@ export default function ProductPage() {
                         uuid={product.UUID}
                         description={product.ProductDescription}
                         price={product.ProductPrice.toString()}
-                        type={product.ProductCategory}
+                        name={product.ProductName}
                       />
                     ))
                 ) : (
