@@ -23,6 +23,7 @@ type CheckoutForm = {
 export default function CheckoutPage() {
   const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
   const [cartGrandTotal, setCartGrandTotal] = React.useState(0);
+  const [customerUUID, setCustomerUUID] = React.useState('');
 
   const form = useForm<CheckoutForm>();
   const { watch, register } = form;
@@ -88,21 +89,46 @@ export default function CheckoutPage() {
     setCartGrandTotal(calculateGrandTotal);
   }, [calculateGrandTotal]);
 
-  const handleSubmit = React.useCallback(() => {
-    console.log(`
-      customer Name: ${customerName}\n
-      customer Email: ${customerEmail}\n
-      customer Phone Number: ${customerPhoneNumber}\n
-      customer Address: ${customerAddress}\n
-      cart grand total: ${cartGrandTotal}
-    `);
-  }, [
-    cartGrandTotal,
-    customerAddress,
-    customerEmail,
-    customerName,
-    customerPhoneNumber,
-  ]);
+  const handlePOSTCustomer = React.useCallback(async () => {
+    const responseCustomer = await fetch(`${process.env.BASE_URL}/customer/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        customername: customerName,
+        customeremail: customerEmail,
+        customeraddress: customerAddress,
+        phonenumber: customerPhoneNumber,
+      }),
+    });
+
+    if (responseCustomer.status === 200) {
+      const data = await responseCustomer.json();
+      console.log('Customer created:', data);
+      setCustomerUUID(data.data.customer.UUID);
+    }
+  }, [customerAddress, customerEmail, customerName, customerPhoneNumber]);
+
+  const handlePOSTOrder = React.useCallback(async () => {
+    const responseOrder = await fetch(`${process.env.BASE_URL}/order/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }, []);
+
+  const handleSubmit = React.useCallback(async () => {
+    if (handleEnableButton()) {
+      try {
+        handlePOSTCustomer();
+      } catch (error) {
+        console.error('Error:', error);
+        // Handle error scenario
+      }
+    }
+  }, [handleEnableButton, handlePOSTCustomer]);
 
   const renderCartItem = React.useMemo(() => {
     return (
