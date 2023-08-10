@@ -53,7 +53,7 @@ export default function CheckoutPage() {
     } else return false;
   };
 
-  const handleGrandTotal = React.useCallback(() => {
+  const calculateGrandTotal = React.useCallback(() => {
     return cartCookie.reduce((total, cart) => {
       const subtotal = cart.ProductPrice * cart.ProductQuantity;
       return total + subtotal;
@@ -85,9 +85,8 @@ export default function CheckoutPage() {
   );
 
   React.useEffect(() => {
-    const grandTotal = handleGrandTotal();
-    setCartGrandTotal(grandTotal);
-  }, [handleGrandTotal]);
+    setCartGrandTotal(calculateGrandTotal);
+  }, [calculateGrandTotal]);
 
   const handleSubmit = React.useCallback(() => {
     console.log(`
