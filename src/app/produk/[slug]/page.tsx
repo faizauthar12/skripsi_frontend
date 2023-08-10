@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 import Button from '@/components/buttons/Button';
-import Footer from '@/components/layout/Footer';
-import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
 
@@ -29,6 +27,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     React.useState<SizeChartCategory>();
 
   const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
+  const [addButton, setAddButton] = React.useState(false);
 
   const handleGetCurrentCart = React.useCallback(() => {
     console.log('handleGetCurrentCart');
@@ -134,6 +133,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       });
 
       setCartCookie(updatedCart);
+      if (quantity > 0 && selectedSizeChart) {
+        setAddButton(true);
+      } else {
+        setAddButton(false);
+      }
     }
   }, [product, quantity, selectedSizeChart, cartCookie]);
 
@@ -162,7 +166,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   // save cookies if any selectedSizeChart and Quantity changed
   useDidUpdate(() => {
     handleChangedCart();
-    handleSaveCart();
   }, [selectedSizeChart, quantity]);
 
   useDidUpdate(() => {
@@ -172,8 +175,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   return (
     <Layout>
       <main>
-        <Header />
-
         <div className='layout relative flex min-h-screen flex-col'>
           <div className='mt-5 grid grid-cols-2 gap-5 md:grid-cols-3 '>
             {/* Image */}
@@ -238,12 +239,24 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     </button>
                   </div>
                 </div>
+
+                <div>
+                  <Button
+                    variant={addButton ? 'primary' : 'light'}
+                    disabled={!addButton}
+                    textCenter
+                    onClick={() => {
+                      handleChangedCart();
+                      handleSaveCart();
+                    }}
+                  >
+                    Tambah Produk
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        <Footer />
       </main>
     </Layout>
   );

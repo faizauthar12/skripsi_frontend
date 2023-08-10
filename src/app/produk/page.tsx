@@ -2,8 +2,6 @@
 
 import * as React from 'react';
 
-import Footer from '@/components/layout/Footer';
-import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import UnstyledLink from '@/components/links/UnstyledLink';
 import Product from '@/components/product/Product';
@@ -58,8 +56,6 @@ export default function ProductPage() {
   return (
     <Layout>
       <main>
-        <Header />
-
         <div className='layout relative flex min-h-screen flex-col'>
           <div className='flex flex-row'>
             <div className='me-40 flex flex-col space-y-5'>
@@ -132,8 +128,6 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
-
-        <Footer />
       </main>
     </Layout>
   );

@@ -3,8 +3,6 @@
 import * as React from 'react';
 
 import Carousel from '@/components/carousel/Carousel';
-import Footer from '@/components/layout/Footer';
-import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import ArrowLink from '@/components/links/ArrowLink';
 import Product from '@/components/product/Product';
@@ -54,8 +52,6 @@ export default function HomePage() {
   return (
     <Layout>
       <main>
-        <Header />
-
         <div className='layout relative flex min-h-screen flex-col'>
           <Carousel images={[]} />
 
@@ -109,8 +105,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
-        <Footer />
       </main>
     </Layout>
   );

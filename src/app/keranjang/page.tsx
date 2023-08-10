@@ -6,8 +6,6 @@ import * as React from 'react';
 
 import Button from '@/components/buttons/Button';
 import CartItem from '@/components/cart/CartItem';
-import Footer from '@/components/layout/Footer';
-import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 import PrimaryLink from '@/components/links/PrimaryLink';
 
@@ -101,8 +99,6 @@ export default function CartPage() {
   return (
     <Layout>
       <main>
-        <Header />
-
         <div className='layout relative flex min-h-screen flex-col'>
           {/* Page title  */}
 
@@ -156,8 +152,6 @@ export default function CartPage() {
             </div>
           </div>
         </div>
-
-        <Footer />
       </main>
     </Layout>
   );

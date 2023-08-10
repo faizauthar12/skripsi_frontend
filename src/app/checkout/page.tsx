@@ -6,8 +6,6 @@ import { useForm } from 'react-hook-form';
 
 import Button from '@/components/buttons/Button';
 import CartItem from '@/components/cart/CartItem';
-import Footer from '@/components/layout/Footer';
-import Header from '@/components/layout/Header';
 import Layout from '@/components/layout/Layout';
 
 import { formatCurrency } from '@/utils/currency/CurrencyHelper';
@@ -124,8 +122,6 @@ export default function CheckoutPage() {
   return (
     <Layout>
       <main>
-        <Header />
-
         <div className='layout relative flex min-h-screen flex-col'>
           {/* Page title  */}
 
@@ -192,8 +188,6 @@ export default function CheckoutPage() {
             </div>
           </div>
         </div>
-
-        <Footer />
       </main>
     </Layout>
   );
