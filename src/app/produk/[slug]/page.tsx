@@ -8,6 +8,7 @@ import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
 import NextImage from '@/components/NextImage';
 
+import { formatCurrency } from '@/utils/currency/CurrencyHelper';
 import { useDidMount, useDidUpdate } from '@/utils/object';
 
 import { CartCookie } from '@/types/cart/CartCookie';
@@ -187,17 +188,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           <div className='mt-5 grid grid-cols-2 gap-5 md:grid-cols-3 '>
             {/* Image */}
 
-            {/* <div className='flex flex-col'>
-              <NextImage
-                useSkeleton
-                className='w-320 md:w-200'
-                src='/images/product.png'
-                width='320'
-                height='300'
-                alt='Icon'
-              />
-            </div> */}
-
             <NextImage
               useSkeleton
               className='w-320 md:w-200'
@@ -212,7 +202,15 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             <div className='col-span-2'>
               <div className='me-28 flex-1 space-y-5'>
                 <div>{product?.ProductName}</div>
-                <div className='text-sm'>{product?.ProductPrice}</div>
+                <div className='text-sm'>
+                  {formatCurrency(
+                    product?.ProductPrice,
+                    undefined,
+                    undefined,
+                    undefined,
+                    2
+                  )}
+                </div>
                 <div className='text-sm'>{product?.ProductDescription} </div>
 
                 <div className='text-sm font-bold'>SIZE</div>
