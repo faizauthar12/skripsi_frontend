@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import Button from '@/components/buttons/Button';
 import Layout from '@/components/layout/Layout';
+import Modal from '@/components/modal/Modal';
 import NextImage from '@/components/NextImage';
 
 import { formatCurrency } from '@/utils/currency/CurrencyHelper';
@@ -29,6 +30,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
   const [addButton, setAddButton] = React.useState(false);
+  const [modalState, setModalState] = React.useState(false);
+
+  const handleToggleModal = React.useCallback(() => {
+    setModalState(!modalState);
+  }, [modalState]);
 
   const handleGetCurrentCart = React.useCallback(() => {
     if (process.env.NODE_ENV == 'development') {
@@ -181,9 +187,21 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     }
   }, [cartCookie]);
 
+  const handleAddToCart = React.useCallback(() => {
+    handleChangedCart();
+    handleSaveCart();
+    handleToggleModal();
+  }, [handleChangedCart, handleSaveCart, handleToggleModal]);
+
   return (
     <Layout cartCount={cartCookie.length}>
       <main>
+        <Modal
+          isVisible={modalState}
+          onClose={handleToggleModal}
+          content={`${product?.ProductName} sejumlah ${quantity} telah berhasil ditambahkan ke keranjang`}
+          title='Barang berhasil ditambahkan'
+        />
         <div className='layout relative flex min-h-screen flex-col'>
           <div className='mt-5 grid grid-cols-2 gap-5 md:grid-cols-3 '>
             {/* Image */}
@@ -251,10 +269,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     variant={addButton ? 'primary' : 'light'}
                     disabled={!addButton}
                     textCenter
-                    onClick={() => {
-                      handleChangedCart();
-                      handleSaveCart();
-                    }}
+                    onClick={handleAddToCart}
                   >
                     Tambah Produk
                   </Button>
