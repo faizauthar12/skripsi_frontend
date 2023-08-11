@@ -1,5 +1,6 @@
 'use client';
 
+import { getCookie } from 'cookies-next';
 import * as React from 'react';
 
 import Carousel from '@/components/carousel/Carousel';
@@ -9,6 +10,7 @@ import Product from '@/components/product/Product';
 
 import { useDidMount } from '@/utils/object';
 
+import { CartCookie } from '@/types/cart/CartCookie';
 import { ProductItem } from '@/types/product/product';
 
 /**
@@ -24,7 +26,20 @@ import { ProductItem } from '@/types/product/product';
 // to customize the default configuration.
 
 export default function HomePage() {
+  const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
   const [products, setProducts] = React.useState<ProductItem[]>([]);
+
+  const handleGetCurrentCart = React.useCallback(() => {
+    if (process.env.NODE_ENV == 'development') {
+      console.log('handleGetCurrentCart');
+    }
+    const currentCart = getCookie('cart') as string;
+
+    if (currentCart) {
+      const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
+      setCartCookie(currentCartParsed);
+    }
+  }, []);
 
   const handleLoadProduct = React.useCallback(async () => {
     try {
@@ -43,6 +58,7 @@ export default function HomePage() {
 
   useDidMount(() => {
     handleLoadProduct();
+    handleGetCurrentCart();
   });
 
   React.useEffect(() => {
@@ -52,7 +68,7 @@ export default function HomePage() {
   });
 
   return (
-    <Layout>
+    <Layout cartCount={cartCookie.length}>
       <main>
         <div className='layout relative flex min-h-screen flex-col'>
           <Carousel images={[]} />

@@ -154,7 +154,7 @@ export default function CheckoutPage() {
   }, [cartCookie, handleChangedCart, handleDeleteCartItem]);
 
   return (
-    <Layout>
+    <Layout cartCount={cartCookie.length}>
       <main>
         <div className='layout relative flex min-h-screen flex-col'>
           {/* Page title  */}

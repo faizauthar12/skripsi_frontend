@@ -181,7 +181,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   }, [cartCookie]);
 
   return (
-    <Layout>
+    <Layout cartCount={cartCookie.length}>
       <main>
         <div className='layout relative flex min-h-screen flex-col'>
           <div className='mt-5 grid grid-cols-2 gap-5 md:grid-cols-3 '>

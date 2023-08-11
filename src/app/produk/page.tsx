@@ -1,5 +1,6 @@
 'use client';
 
+import { getCookie } from 'cookies-next';
 import * as React from 'react';
 
 import Layout from '@/components/layout/Layout';
@@ -8,11 +9,25 @@ import Product from '@/components/product/Product';
 
 import { useDidMount } from '@/utils/object';
 
+import { CartCookie } from '@/types/cart/CartCookie';
 import { ProductItem } from '@/types/product/product';
 
 export default function ProductPage() {
+  const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
   const [products, setProducts] = React.useState<ProductItem[]>([]);
   const [pageTitle, setPageTitle] = React.useState('Semua Produk');
+
+  const handleGetCurrentCart = React.useCallback(() => {
+    if (process.env.NODE_ENV == 'development') {
+      console.log('handleGetCurrentCart');
+    }
+    const currentCart = getCookie('cart') as string;
+
+    if (currentCart) {
+      const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
+      setCartCookie(currentCartParsed);
+    }
+  }, []);
 
   const handleLoadProduct = React.useCallback(async () => {
     try {
@@ -51,10 +66,11 @@ export default function ProductPage() {
 
   useDidMount(() => {
     handleLoadProduct();
+    handleGetCurrentCart();
   });
 
   return (
-    <Layout>
+    <Layout cartCount={cartCookie.length}>
       <main>
         <div className='layout relative flex min-h-screen flex-col'>
           <div className='flex flex-row'>
