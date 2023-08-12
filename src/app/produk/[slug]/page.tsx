@@ -36,17 +36,27 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     setModalState(!modalState);
   }, [modalState]);
 
-  const handleGetCurrentCart = React.useCallback(() => {
-    if (process.env.NODE_ENV == 'development') {
-      console.log('handleGetCurrentCart');
-    }
-    const currentCart = getCookie('cart') as string;
+  const handleLoadProduct = React.useCallback(async () => {
+    try {
+      const response = await fetch(`${process.env.BASE_URL}/product/${slug}`);
 
-    if (currentCart) {
-      const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
-      setCartCookie(currentCartParsed);
+      if (response.status === 200) {
+        const data = await response.json();
+        setProduct(data.data.product);
+
+        const currentCart = getCookie('cart') as string;
+
+        if (currentCart) {
+          const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
+          setCartCookie(currentCartParsed);
+        }
+      } else {
+        router.push('/404');
+      }
+    } catch (error) {
+      setProduct(undefined);
     }
-  }, []);
+  }, [router, slug]);
 
   // run it once in the beginning
   useDidMount(() => {
@@ -57,38 +67,19 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       { id: 4, size: 'L' },
       { id: 5, size: 'XL' },
     ]);
-    handleGetCurrentCart();
+    handleLoadProduct();
   });
 
-  const handleLoadProduct = React.useCallback(async () => {
-    try {
-      const response = await fetch(`${process.env.BASE_URL}/product/${slug}`);
-
-      if (response.status === 200) {
-        const data = await response.json();
-        setProduct(data.data.product);
-      }
-    } catch (error) {
-      setProduct(undefined);
-    }
-  }, [slug]);
-
   React.useEffect(() => {
-    if (slug) {
-      handleLoadProduct();
+    const existingCartItem = cartCookie.find(
+      (item) => item.ProductUUID === slug
+    );
 
-      const existingCartItem = cartCookie.find(
-        (item) => item.ProductUUID === slug
+    if (existingCartItem) {
+      setQuantity(existingCartItem.ProductQuantity);
+      setSelectedSizeChart(
+        sizeChartData.find((size) => size.size === existingCartItem.ProductSize)
       );
-
-      if (existingCartItem) {
-        setQuantity(existingCartItem.ProductQuantity);
-        setSelectedSizeChart(
-          sizeChartData.find(
-            (size) => size.size === existingCartItem.ProductSize
-          )
-        );
-      }
     }
   }, [slug, handleLoadProduct, cartCookie, sizeChartData]);
 
