@@ -89,6 +89,39 @@ export default function CheckoutPage() {
     setCartGrandTotal(calculateGrandTotal);
   }, [calculateGrandTotal]);
 
+  const handlePOSTOrder = React.useCallback(async () => {
+    const responseOrder = await fetch(`${process.env.BASE_URL}/order/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        cartitem: cartCookie,
+        cartgrandtotal: cartGrandTotal,
+        customeruuid: customerUUID,
+        customername: customerName,
+        customeremail: customerEmail,
+        customeraddress: customerAddress,
+        customerphonenumber: customerPhoneNumber,
+      }),
+    });
+
+    if (responseOrder.status === 200) {
+      const data = await responseOrder.json();
+      if (process.env.NODE_ENV == 'development') {
+        console.log('Order created:', data);
+      }
+    }
+  }, [
+    cartCookie,
+    cartGrandTotal,
+    customerAddress,
+    customerEmail,
+    customerName,
+    customerPhoneNumber,
+    customerUUID,
+  ]);
+
   const handlePOSTCustomer = React.useCallback(async () => {
     const responseCustomer = await fetch(`${process.env.BASE_URL}/customer/`, {
       method: 'POST',
@@ -109,28 +142,28 @@ export default function CheckoutPage() {
         console.log('Customer created:', data);
       }
       setCustomerUUID(data.data.customer.UUID);
+      console.log(customerUUID);
     }
-  }, [customerAddress, customerEmail, customerName, customerPhoneNumber]);
-
-  const handlePOSTOrder = React.useCallback(async () => {
-    const responseOrder = await fetch(`${process.env.BASE_URL}/order/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  }, []);
+  }, [
+    customerAddress,
+    customerEmail,
+    customerName,
+    customerPhoneNumber,
+    customerUUID,
+  ]);
 
   const handleSubmit = React.useCallback(async () => {
     if (handleEnableButton()) {
       try {
-        handlePOSTCustomer();
+        handlePOSTCustomer().then(() => {
+          handlePOSTOrder();
+        });
       } catch (error) {
         console.error('Error:', error);
         // Handle error scenario
       }
     }
-  }, [handleEnableButton, handlePOSTCustomer]);
+  }, [handleEnableButton, handlePOSTCustomer, handlePOSTOrder]);
 
   const renderCartItem = React.useMemo(() => {
     return (
