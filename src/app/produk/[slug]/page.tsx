@@ -10,7 +10,7 @@ import Modal from '@/components/modal/Modal';
 import NextImage from '@/components/NextImage';
 
 import { formatCurrency } from '@/utils/currency/CurrencyHelper';
-import { useDidMount, useDidUpdate } from '@/utils/object';
+import { useDidMount } from '@/utils/object';
 
 import { CartCookie } from '@/types/cart/CartCookie';
 import { ProductItem } from '@/types/product/product';
@@ -127,36 +127,28 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     [handleSelectSizeChart, selectedSizeChart, sizeChartData]
   );
 
-  const handleChangedCart = React.useCallback(() => {
-    if (product && selectedSizeChart && quantity > 0) {
-      if (process.env.NODE_ENV == 'development') {
-        console.log('handleChangedCart');
-      }
-      const updatedCart = cartCookie.map((item) => {
-        if (item.ProductUUID === product.UUID) {
-          return {
-            ...item,
-            ProductQuantity: quantity,
-            ProductSize: selectedSizeChart.size,
-          };
-        }
-        return item;
-      });
-
-      setCartCookie(updatedCart);
-      if (quantity > 0 && selectedSizeChart) {
-        setAddButton(true);
-      } else {
-        setAddButton(false);
-      }
-    }
-  }, [product, quantity, selectedSizeChart, cartCookie]);
-
   const handleSaveCart = React.useCallback(() => {
     if (process.env.NODE_ENV == 'development') {
       console.log('handleSaveCart');
     }
     if (product && selectedSizeChart && quantity > 0) {
+      const parsedCartCookie = JSON.stringify(cartCookie);
+      setCookie('cart', parsedCartCookie);
+    }
+  }, [cartCookie, product, quantity, selectedSizeChart]);
+
+  const handleAddToCart = React.useCallback(() => {
+    handleSaveCart();
+    handleToggleModal();
+  }, [handleSaveCart, handleToggleModal]);
+
+  // handle changed state of quantity and size chart
+  React.useEffect(() => {
+    if (process.env.NODE_ENV == 'development') {
+      console.log(cartCookie);
+    }
+
+    if (product && selectedSizeChart) {
       const updatedCartCookie = cartCookie.filter(
         (item) => item.ProductUUID !== product.UUID
       );
@@ -171,24 +163,15 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
       setCartCookie(updatedCartCookie);
 
-      const parsedCartCookie = JSON.stringify(updatedCartCookie);
-      setCookie('cart', parsedCartCookie);
+      if (quantity > 0 && selectedSizeChart) {
+        setAddButton(true);
+      } else {
+        setAddButton(false);
+      }
     }
-  }, [cartCookie, product, quantity, selectedSizeChart]);
-
-  // save cookies if any selectedSizeChart and Quantity changed
-  useDidUpdate(() => {
-    if (process.env.NODE_ENV == 'development') {
-      console.log(cartCookie);
-    }
-    handleChangedCart();
-  }, [selectedSizeChart, quantity]);
-
-  const handleAddToCart = React.useCallback(() => {
-    handleChangedCart();
-    handleSaveCart();
-    handleToggleModal();
-  }, [handleChangedCart, handleSaveCart, handleToggleModal]);
+    // depends only at quantity and selectedSizeCart!
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quantity, selectedSizeChart]);
 
   return (
     <Layout cartCount={cartCookie.length}>
