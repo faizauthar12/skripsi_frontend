@@ -27,7 +27,6 @@ export default function CartPage() {
     if (currentCart) {
       const currentCartParsed: CartCookie[] = JSON.parse(currentCart);
       setCartCookie(currentCartParsed);
-      setCheckoutButton(true);
     }
   }, []);
 
