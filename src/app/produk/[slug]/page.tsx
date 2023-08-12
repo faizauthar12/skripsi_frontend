@@ -123,7 +123,21 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       console.log('handleSaveCart');
     }
     if (product && selectedSizeChart && quantity > 0) {
-      const parsedCartCookie = JSON.stringify(cartCookie);
+      const updatedCartCookie = cartCookie.filter(
+        (item) => item.ProductUUID !== product.UUID
+      );
+
+      updatedCartCookie.push({
+        ProductUUID: product.UUID,
+        ProductName: product.ProductName,
+        ProductQuantity: quantity,
+        ProductSize: selectedSizeChart.size,
+        ProductPrice: product.ProductPrice,
+      });
+
+      setCartCookie(updatedCartCookie);
+
+      const parsedCartCookie = JSON.stringify(updatedCartCookie);
       setCookie('cart', parsedCartCookie);
     }
   }, [cartCookie, product, quantity, selectedSizeChart]);
@@ -140,20 +154,18 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     }
 
     if (product && selectedSizeChart) {
-      const updatedCartCookie = cartCookie.filter(
-        (item) => item.ProductUUID !== product.UUID
-      );
-
-      updatedCartCookie.push({
-        ProductUUID: product.UUID,
-        ProductName: product.ProductName,
-        ProductQuantity: quantity,
-        ProductSize: selectedSizeChart.size,
-        ProductPrice: product.ProductPrice,
+      const updatedCart = cartCookie.map((item) => {
+        if (item.ProductUUID === product.UUID) {
+          return {
+            ...item,
+            ProductQuantity: quantity,
+            ProductSize: selectedSizeChart.size,
+          };
+        }
+        return item;
       });
 
-      setCartCookie(updatedCartCookie);
-
+      setCartCookie(updatedCart);
       if (quantity > 0 && selectedSizeChart) {
         setAddButton(true);
       } else {
