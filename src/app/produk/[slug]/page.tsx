@@ -178,14 +178,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   // save cookies if any selectedSizeChart and Quantity changed
   useDidUpdate(() => {
-    handleChangedCart();
-  }, [selectedSizeChart, quantity]);
-
-  useDidUpdate(() => {
     if (process.env.NODE_ENV == 'development') {
       console.log(cartCookie);
     }
-  }, [cartCookie]);
+    handleChangedCart();
+  }, [selectedSizeChart, quantity]);
 
   const handleAddToCart = React.useCallback(() => {
     handleChangedCart();
