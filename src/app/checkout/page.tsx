@@ -21,10 +21,20 @@ type CheckoutForm = {
   customerPhoneNumber: string;
 };
 
+type DurianPayItems = {
+  name: string;
+  qty: number;
+  price: string;
+  logo: string;
+};
+
 export default function CheckoutPage() {
   const router = useRouter();
 
   const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
+  const [durianPayItem, setDurianPayItem] = React.useState<DurianPayItems[]>(
+    []
+  );
   const [cartGrandTotal, setCartGrandTotal] = React.useState(0);
   const [customerUUID, setCustomerUUID] = React.useState('');
 
@@ -92,17 +102,32 @@ export default function CheckoutPage() {
     setCartGrandTotal(calculateGrandTotal);
   }, [calculateGrandTotal]);
 
+  const handleSetDurianPayItem = React.useCallback(() => {
+    for (let i = 0; i < cartCookie.length; i++) {
+      setDurianPayItem([
+        ...durianPayItem,
+        {
+          name: cartCookie[i].ProductName,
+          qty: cartCookie[i].ProductQuantity,
+          price: cartCookie[i].ProductPrice.toString(),
+          logo: '/static/tv_image.jpg',
+        },
+      ]);
+    }
+    return durianPayItem;
+  }, [cartCookie, durianPayItem]);
+
   const handlePOSTDurianPay = React.useCallback(async () => {
     const responseDurianPay = await fetch(
       'https://api.durianpay.id/v1/orders',
       {
         method: 'POST',
         headers: {
-          authorization: 'ZHBfdGVzdF9Xb3dVUld4bXJzcWJVaUtGOg==',
+          authorization: process.env.DURIANPAY_AUTH!,
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          amount: '12000000',
+          amount: cartGrandTotal,
           currency: 'IDR',
           is_payment_link: true,
           is_live: false,
@@ -112,36 +137,32 @@ export default function CheckoutPage() {
             delay_ms: 1,
           },
           customer: {
-            email: 'faizauthar@gmail.com',
-            mobile: '085155054855',
-            given_name: 'pukisna',
-            address_line_1: 'Jl. Doang ga jadian',
-            city: 'Jakarta',
-            region: 'Indonesia',
-            postal_code: '13460',
+            email: customerEmail,
+            mobile: customerPhoneNumber,
+            given_name: customerName,
+            address_line_1: customerAddress,
           },
-          items: [
-            {
-              name: 'LED Television',
-              qty: 1,
-              price: '1000000',
-              logo: '/static/tv_image.jpg',
-            },
-          ],
+          items: handleSetDurianPayItem(),
         }),
       }
     );
 
     if (responseDurianPay.status === 201) {
       const data = await responseDurianPay.json();
-      if (process.env.NODE_ENV == 'development') {
-        console.log('Payment created:', data);
-      }
+      console.log('Payment created:', data);
       router.push(
         `https://links.durianpay.id/payment/${data.data.payment_link_url}`
       );
     }
-  }, [router]);
+  }, [
+    cartGrandTotal,
+    customerAddress,
+    customerEmail,
+    customerName,
+    customerPhoneNumber,
+    handleSetDurianPayItem,
+    router,
+  ]);
 
   const handlePOSTOrder = React.useCallback(async () => {
     const responseOrder = await fetch(`${process.env.BASE_URL}/order/`, {
@@ -165,7 +186,6 @@ export default function CheckoutPage() {
       if (process.env.NODE_ENV == 'development') {
         console.log('Order created:', data);
       }
-
       // router.push(data.data.payment_link_url);
     }
   }, [
@@ -212,21 +232,14 @@ export default function CheckoutPage() {
     if (handleEnableButton()) {
       try {
         handlePOSTCustomer().then(() => {
-          handlePOSTOrder().then(() => {
-            handlePOSTDurianPay();
-          });
+          handlePOSTDurianPay();
         });
       } catch (error) {
         console.error('Error:', error);
         // Handle error scenario
       }
     }
-  }, [
-    handleEnableButton,
-    handlePOSTCustomer,
-    handlePOSTDurianPay,
-    handlePOSTOrder,
-  ]);
+  }, [handleEnableButton, handlePOSTCustomer, handlePOSTDurianPay]);
 
   const renderCartItem = React.useMemo(() => {
     return (

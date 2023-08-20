@@ -2,6 +2,7 @@
 const nextConfig = {
   env: {
     BASE_URL: process.env.BASE_URL,
+    DURIANPAY_AUTH: process.env.DURIANPAY_AUTH,
   },
 
   eslint: {
