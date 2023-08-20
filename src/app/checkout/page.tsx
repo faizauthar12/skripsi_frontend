@@ -1,6 +1,7 @@
 'use client';
 
 import { getCookie, setCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -21,6 +22,8 @@ type CheckoutForm = {
 };
 
 export default function CheckoutPage() {
+  const router = useRouter();
+
   const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
   const [cartGrandTotal, setCartGrandTotal] = React.useState(0);
   const [customerUUID, setCustomerUUID] = React.useState('');
@@ -89,6 +92,57 @@ export default function CheckoutPage() {
     setCartGrandTotal(calculateGrandTotal);
   }, [calculateGrandTotal]);
 
+  const handlePOSTDurianPay = React.useCallback(async () => {
+    const responseDurianPay = await fetch(
+      'https://api.durianpay.id/v1/orders',
+      {
+        method: 'POST',
+        headers: {
+          authorization: 'ZHBfdGVzdF9Xb3dVUld4bXJzcWJVaUtGOg==',
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: '12000000',
+          currency: 'IDR',
+          is_payment_link: true,
+          is_live: false,
+          is_notification_enabled: true,
+          sandbox_options: {
+            force_fail: false,
+            delay_ms: 1,
+          },
+          customer: {
+            email: 'faizauthar@gmail.com',
+            mobile: '085155054855',
+            given_name: 'pukisna',
+            address_line_1: 'Jl. Doang ga jadian',
+            city: 'Jakarta',
+            region: 'Indonesia',
+            postal_code: '13460',
+          },
+          items: [
+            {
+              name: 'LED Television',
+              qty: 1,
+              price: '1000000',
+              logo: '/static/tv_image.jpg',
+            },
+          ],
+        }),
+      }
+    );
+
+    if (responseDurianPay.status === 201) {
+      const data = await responseDurianPay.json();
+      if (process.env.NODE_ENV == 'development') {
+        console.log('Payment created:', data);
+      }
+      router.push(
+        `https://links.durianpay.id/payment/${data.data.payment_link_url}`
+      );
+    }
+  }, [router]);
+
   const handlePOSTOrder = React.useCallback(async () => {
     const responseOrder = await fetch(`${process.env.BASE_URL}/order/`, {
       method: 'POST',
@@ -111,6 +165,8 @@ export default function CheckoutPage() {
       if (process.env.NODE_ENV == 'development') {
         console.log('Order created:', data);
       }
+
+      // router.push(data.data.payment_link_url);
     }
   }, [
     cartCookie,
@@ -156,14 +212,21 @@ export default function CheckoutPage() {
     if (handleEnableButton()) {
       try {
         handlePOSTCustomer().then(() => {
-          handlePOSTOrder();
+          handlePOSTOrder().then(() => {
+            handlePOSTDurianPay();
+          });
         });
       } catch (error) {
         console.error('Error:', error);
         // Handle error scenario
       }
     }
-  }, [handleEnableButton, handlePOSTCustomer, handlePOSTOrder]);
+  }, [
+    handleEnableButton,
+    handlePOSTCustomer,
+    handlePOSTDurianPay,
+    handlePOSTOrder,
+  ]);
 
   const renderCartItem = React.useMemo(() => {
     return (
