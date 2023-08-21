@@ -131,17 +131,15 @@ export default function ProductPage() {
               <div className='font-bold'>{pageTitle}</div>
               <div className='mt-[27px] grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3'>
                 {products.length > 0 ? (
-                  products
-                    .slice(0, 4)
-                    .map((product) => (
-                      <Product
-                        key={product.UUID}
-                        uuid={product.UUID}
-                        description={product.ProductDescription}
-                        price={product.ProductPrice.toString()}
-                        name={product.ProductName}
-                      />
-                    ))
+                  products.map((product) => (
+                    <Product
+                      key={product.UUID}
+                      uuid={product.UUID}
+                      description={product.ProductDescription}
+                      price={product.ProductPrice.toString()}
+                      name={product.ProductName}
+                    />
+                  ))
                 ) : (
                   <div>No products found.</div>
                 )}

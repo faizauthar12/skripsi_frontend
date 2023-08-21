@@ -80,16 +80,14 @@ export default function CartPage() {
     return (
       <div>
         {cartCookie.length > 0 ? (
-          cartCookie
-            .slice(0, 4)
-            .map((cart) => (
-              <CartItem
-                key={cart.ProductUUID}
-                cart={cart}
-                onChange={handleChangedCart}
-                onDelete={handleDeleteCartItem}
-              />
-            ))
+          cartCookie.map((cart) => (
+            <CartItem
+              key={cart.ProductUUID}
+              cart={cart}
+              onChange={handleChangedCart}
+              onDelete={handleDeleteCartItem}
+            />
+          ))
         ) : (
           <div></div>
         )}
