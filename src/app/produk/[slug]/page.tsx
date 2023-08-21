@@ -130,6 +130,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       updatedCartCookie.push({
         ProductUUID: product.UUID,
         ProductName: product.ProductName,
+        ProductPic: product.ProductPic,
         ProductQuantity: quantity,
         ProductSize: selectedSizeChart.size,
         ProductPrice: product.ProductPrice,

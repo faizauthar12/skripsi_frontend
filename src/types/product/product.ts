@@ -3,6 +3,7 @@ export interface ProductItem {
   UserUUID: string;
   UserName: string;
   ProductName: string;
+  ProductPic: string;
   ProductDescription: string;
   ProductCategory: string;
   ProductPrice: number;

@@ -26,7 +26,7 @@ export default function CheckoutPage() {
 
   const [cartCookie, setCartCookie] = React.useState<CartCookie[]>([]);
   const [cartGrandTotal, setCartGrandTotal] = React.useState(0);
-  const [customerUUID, setCustomerUUID] = React.useState('');
+  // const [customerUUID, setCustomerUUID] = React.useState('');
 
   const form = useForm<CheckoutForm>();
   const { watch, register } = form;
@@ -92,91 +92,43 @@ export default function CheckoutPage() {
     setCartGrandTotal(calculateGrandTotal);
   }, [calculateGrandTotal]);
 
-  const handlePOSTDurianPay = React.useCallback(async () => {
-    const responseDurianPay = await fetch(
-      'https://api.durianpay.id/v1/orders',
-      {
+  const handlePOSTOrder = React.useCallback(
+    async (customerUUID: string) => {
+      const responseOrder = await fetch(`${process.env.BASE_URL}/order/`, {
         method: 'POST',
         headers: {
-          authorization: 'ZHBfdGVzdF9Xb3dVUld4bXJzcWJVaUtGOg==',
-          'content-type': 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: '12000000',
-          currency: 'IDR',
-          is_payment_link: true,
-          is_live: false,
-          is_notification_enabled: true,
-          sandbox_options: {
-            force_fail: false,
-            delay_ms: 1,
-          },
-          customer: {
-            email: 'faizauthar@gmail.com',
-            mobile: '085155054855',
-            given_name: 'pukisna',
-            address_line_1: 'Jl. Doang ga jadian',
-            city: 'Jakarta',
-            region: 'Indonesia',
-            postal_code: '13460',
-          },
-          items: [
-            {
-              name: 'LED Television',
-              qty: 1,
-              price: '1000000',
-              logo: '/static/tv_image.jpg',
-            },
-          ],
+          cartitem: cartCookie,
+          cartgrandtotal: cartGrandTotal,
+          customeruuid: customerUUID,
+          customername: customerName,
+          customeremail: customerEmail,
+          customeraddress: customerAddress,
+          customerphonenumber: customerPhoneNumber,
         }),
+      });
+
+      if (responseOrder.status === 200) {
+        const data = await responseOrder.json();
+        if (process.env.NODE_ENV == 'development') {
+          console.log('Order created:', data);
+        }
+
+        router.push(data.data.payment_link_url);
       }
-    );
-
-    if (responseDurianPay.status === 201) {
-      const data = await responseDurianPay.json();
-      if (process.env.NODE_ENV == 'development') {
-        console.log('Payment created:', data);
-      }
-      router.push(
-        `https://links.durianpay.id/payment/${data.data.payment_link_url}`
-      );
-    }
-  }, [router]);
-
-  const handlePOSTOrder = React.useCallback(async () => {
-    const responseOrder = await fetch(`${process.env.BASE_URL}/order/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        cartitem: cartCookie,
-        cartgrandtotal: cartGrandTotal,
-        customeruuid: customerUUID,
-        customername: customerName,
-        customeremail: customerEmail,
-        customeraddress: customerAddress,
-        customerphonenumber: customerPhoneNumber,
-      }),
-    });
-
-    if (responseOrder.status === 200) {
-      const data = await responseOrder.json();
-      if (process.env.NODE_ENV == 'development') {
-        console.log('Order created:', data);
-      }
-
-      // router.push(data.data.payment_link_url);
-    }
-  }, [
-    cartCookie,
-    cartGrandTotal,
-    customerAddress,
-    customerEmail,
-    customerName,
-    customerPhoneNumber,
-    customerUUID,
-  ]);
+    },
+    [
+      cartCookie,
+      cartGrandTotal,
+      customerAddress,
+      customerEmail,
+      customerName,
+      customerPhoneNumber,
+      router,
+    ]
+  );
 
   const handlePOSTCustomer = React.useCallback(async () => {
     const responseCustomer = await fetch(`${process.env.BASE_URL}/customer/`, {
@@ -197,36 +149,27 @@ export default function CheckoutPage() {
       if (process.env.NODE_ENV == 'development') {
         console.log('Customer created:', data);
       }
-      setCustomerUUID(data.data.customer.UUID);
-      console.log(customerUUID);
+      // setCustomerUUID(data.data.customer.UUID);
+      return data.data.customer.UUID;
     }
-  }, [
-    customerAddress,
-    customerEmail,
-    customerName,
-    customerPhoneNumber,
-    customerUUID,
-  ]);
+  }, [customerAddress, customerEmail, customerName, customerPhoneNumber]);
 
   const handleSubmit = React.useCallback(async () => {
     if (handleEnableButton()) {
       try {
-        handlePOSTCustomer().then(() => {
-          handlePOSTOrder().then(() => {
-            handlePOSTDurianPay();
-          });
-        });
+        const customerUUID = await handlePOSTCustomer();
+        if (customerUUID) {
+          handlePOSTOrder(customerUUID);
+        }
+        // handlePOSTCustomer().then(() => {
+        //   handlePOSTOrder();
+        // });
       } catch (error) {
         console.error('Error:', error);
         // Handle error scenario
       }
     }
-  }, [
-    handleEnableButton,
-    handlePOSTCustomer,
-    handlePOSTDurianPay,
-    handlePOSTOrder,
-  ]);
+  }, [handleEnableButton, handlePOSTCustomer, handlePOSTOrder]);
 
   const renderCartItem = React.useMemo(() => {
     return (
