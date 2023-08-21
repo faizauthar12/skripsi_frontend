@@ -48,7 +48,7 @@ export default function ProductPage() {
     async (filter: string) => {
       try {
         const response = await fetch(
-          `${process.env.BASE_URL}/product?category=${filter}`
+          `${process.env.BASE_URL}/product/?category=${filter}`
         );
 
         if (response.status === 200) {
@@ -116,7 +116,7 @@ export default function ProductPage() {
                 href='/produk'
                 className=' hover:text-gray-600'
                 onClick={() => {
-                  handleLoadProductWithFilter('Wanita');
+                  handleLoadProductWithFilter('wanita');
                   setPageTitle('Wanita');
                   if (process.env.NODE_ENV == 'development') {
                     console.log('Filterd: Wanita');
@@ -130,7 +130,7 @@ export default function ProductPage() {
             <div className='flex flex-col'>
               <div className='font-bold'>{pageTitle}</div>
               <div className='mt-[27px] grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3'>
-                {products.length > 0 ? (
+                {products && products.length > 0 ? (
                   products.map((product) => (
                     <Product
                       key={product.UUID}
